@@ -1,4 +1,7 @@
 package com.ilyap.taskmanager.repository;
 
-public interface UserRepository {
+import com.ilyap.taskmanager.model.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Long> {
 }

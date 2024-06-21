@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -22,7 +21,6 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "users")
 public class User extends AuditingEntity {
@@ -39,7 +37,6 @@ public class User extends AuditingEntity {
     private Role role;
 
     @ToString.Exclude
-    @Builder.Default
     @OneToMany(mappedBy = "user")
     private List<UserTask> userTasks = new ArrayList<>();
 }
