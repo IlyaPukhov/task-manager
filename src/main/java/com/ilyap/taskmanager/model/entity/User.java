@@ -1,4 +1,4 @@
-package com.ilyap.taskmanager.model;
+package com.ilyap.taskmanager.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -24,25 +24,22 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "task")
-public class Task extends AuditingEntity {
+@Table(name = "users")
+public class User extends AuditingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String username;
 
-    private String description;
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    private String password;
 
     @Enumerated(EnumType.STRING)
-    private Priority priority;
+    private Role role;
 
     @ToString.Exclude
     @Builder.Default
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "user")
     private List<UserTask> userTasks = new ArrayList<>();
 }

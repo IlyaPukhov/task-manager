@@ -1,4 +1,4 @@
-package com.ilyap.taskmanager.model;
+package com.ilyap.taskmanager.model.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
