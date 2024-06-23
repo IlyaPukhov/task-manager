@@ -4,6 +4,7 @@ import com.ilyap.taskmanager.mapper.TaskMapper;
 import com.ilyap.taskmanager.model.dto.TaskDto;
 import com.ilyap.taskmanager.model.entity.Task;
 import com.ilyap.taskmanager.service.TaskService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,14 +45,14 @@ public class TaskController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public TaskDto create(TaskDto taskDto) {
+    public TaskDto create(@Valid TaskDto taskDto) {
         return taskService.create(taskMapper.fromDtoToEntity(taskDto));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id,
-                                    TaskDto taskDto) {
-        Optional<TaskDto> updatedTask = taskService.update(id, taskMapper.fromDtoToEntity((taskDto)));
+                                    @Valid TaskDto taskDto) {
+        Optional<TaskDto> updatedTask = taskService.update(id, taskMapper.fromDtoToEntity(taskDto));
         return ResponseEntity.of(updatedTask);
     }
 

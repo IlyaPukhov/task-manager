@@ -43,7 +43,7 @@ public abstract class TaskMapper {
         task.setUserTasks(userTasks);
     }
 
-    Long fromUserTaskToUserId(UserTask userTask) {
+    protected Long fromUserTaskToUserId(UserTask userTask) {
         return userTask.getUser().getId();
     }
 }
