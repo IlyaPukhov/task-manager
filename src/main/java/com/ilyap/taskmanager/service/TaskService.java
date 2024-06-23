@@ -1,62 +1,23 @@
 package com.ilyap.taskmanager.service;
 
-import com.ilyap.taskmanager.mapper.TaskMapper;
-import com.ilyap.taskmanager.model.dto.TaskDto;
-import com.ilyap.taskmanager.model.entity.Task;
-import com.ilyap.taskmanager.repository.TaskRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import com.ilyap.taskmanager.model.dto.TaskCreateUpdateDto;
+import com.ilyap.taskmanager.model.dto.TaskReadDto;
 
 import java.util.List;
-import java.util.Optional;
 
-@Service
-@RequiredArgsConstructor
-@Transactional(readOnly = true)
-public class TaskService {
+public interface TaskService {
 
-    private final TaskMapper taskMapper;
-    private final TaskRepository taskRepository;
+    TaskReadDto getTaskById(Long id);
 
-    public List<Task> getAll() {
-        return taskRepository.findAll();
-    }
+    List<TaskReadDto> getAll();
 
-    public Optional<Task> getTaskById(Long id) {
-        return taskRepository.findById(id);
-    }
+    List<TaskReadDto> getAllByUserId(Long userId);
 
-    public List<Task> getAllByUserId(Long userId) {
-        return taskRepository.getAllByUserId(userId);
-    }
+    TaskReadDto create(TaskCreateUpdateDto taskCreateUpdateDto);
 
-    @Transactional
-    public TaskDto create(Task task) {
-        Task saved = taskRepository.save(task);
-        return taskMapper.fromEntityToDto(saved);
-    }
+    TaskReadDto update(Long id, TaskCreateUpdateDto taskCreateUpdateDto);
 
-    @Transactional
-    public Optional<TaskDto> update(Long id, Task task) {
-        return taskRepository.findById(id)
-                .map(t -> taskRepository.save(task))
-                .map(taskMapper::fromEntityToDto);
-    }
+    void delete(Long id);
 
-    @Transactional
-    public boolean delete(Long id) {
-        return taskRepository.findById(id)
-                .map(entity -> {
-                    taskRepository.delete(entity);
-                    return true;
-                })
-                .orElse(false);
-    }
-
-    @Transactional
-    public boolean deleteAllByUserId(Long userId) {
-        taskRepository.deleteAllByUserId(userId);
-        return getAllByUserId(userId).isEmpty();
-    }
+    void deleteAllByUserId(Long userId);
 }

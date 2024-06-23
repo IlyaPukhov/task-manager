@@ -10,13 +10,16 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldNameConstants;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@FieldNameConstants
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskDto {
+public class TaskCreateUpdateDto {
 
     @NotBlank
     @NotEmpty
@@ -36,5 +39,5 @@ public class TaskDto {
     @ValueOfEnum(enumClass = Priority.class)
     private String priority;
 
-    private List<Long> usersId;
+    private List<Long> usersId = new ArrayList<>();
 }
