@@ -1,5 +1,6 @@
 package com.ilyap.taskmanager.service.impl;
 
+import com.ilyap.taskmanager.exception.TaskNotFoundException;
 import com.ilyap.taskmanager.mapper.TaskCreateUpdateMapper;
 import com.ilyap.taskmanager.mapper.TaskReadMapper;
 import com.ilyap.taskmanager.model.dto.TaskCreateUpdateDto;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -27,7 +27,7 @@ public class TaskServiceImpl implements TaskService {
     public TaskReadDto getTaskById(Long id) {
         return taskRepository.findById(id)
                 .map(taskReadMapper::map)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     @Override
@@ -61,7 +61,7 @@ public class TaskServiceImpl implements TaskService {
                 .map(task -> taskCreateUpdateMapper.map(taskCreateUpdateDto, task))
                 .map(taskRepository::save)
                 .map(taskReadMapper::map)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     @Transactional
@@ -69,7 +69,7 @@ public class TaskServiceImpl implements TaskService {
     public void delete(Long id) {
         taskRepository.findById(id)
                 .ifPresentOrElse(taskRepository::delete, () -> {
-                    throw new NoSuchElementException();
+                    throw new TaskNotFoundException(id);
                 });
     }
 
@@ -77,7 +77,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteAllByUserId(Long userId) {
         if (taskRepository.getAllByUserId(userId).isEmpty()) {
-            throw new NoSuchElementException();
+            throw new TaskNotFoundException("User's tasks with id %d not found".formatted(userId));
         }
         taskRepository.deleteAllByUserId(userId);
     }

@@ -6,25 +6,22 @@ import com.ilyap.taskmanager.model.entity.UserTask;
 import com.ilyap.taskmanager.service.UserService;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static com.ilyap.taskmanager.model.entity.Task.Fields.id;
-
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class TaskCreateUpdateMapper {
 
     @Autowired
     private UserService userService;
 
-    @Mapping(target = id, ignore = true)
     public abstract Task map(TaskCreateUpdateDto taskCreateUpdateDto);
 
-    @Mapping(target = id, ignore = true)
     public abstract Task map(TaskCreateUpdateDto taskCreateUpdateDto, @MappingTarget Task task);
 
     @AfterMapping
