@@ -10,6 +10,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static com.ilyap.taskmanager.model.entity.Role.ADMIN;
+import static com.ilyap.taskmanager.model.entity.Role.USER;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -18,7 +21,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http.authorizeHttpRequests(authorizeHttpRequests ->
                         authorizeHttpRequests
-                                .requestMatchers("/**").permitAll())
+                                .requestMatchers("/api/v1/**").hasAnyAuthority(USER.getAuthority(), ADMIN.getAuthority()))
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionManagement -> sessionManagement
