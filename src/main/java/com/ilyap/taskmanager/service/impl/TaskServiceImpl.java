@@ -38,8 +38,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskReadDto> getAllByUserId(Long userId) {
-        return taskRepository.getAllByUserId(userId).stream()
+    public List<TaskReadDto> getAllByUsername(String username) {
+        return taskRepository.getAllByUsername(username).stream()
                 .map(taskReadMapper::map)
                 .toList();
     }
@@ -67,18 +67,12 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public void delete(Long id) {
-        taskRepository.findById(id)
-                .ifPresentOrElse(taskRepository::delete, () -> {
-                    throw new TaskNotFoundException(id);
-                });
+        taskRepository.deleteById(id);
     }
 
     @Transactional
     @Override
-    public void deleteAllByUserId(Long userId) {
-        if (taskRepository.getAllByUserId(userId).isEmpty()) {
-            throw new TaskNotFoundException("User's tasks with id %d not found".formatted(userId));
-        }
-        taskRepository.deleteAllByUserId(userId);
+    public void deleteAllByUsername(String username) {
+        taskRepository.deleteAllByUsername(username);
     }
 }

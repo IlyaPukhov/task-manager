@@ -11,7 +11,7 @@ public interface TaskService {
 
     List<TaskReadDto> getAll();
 
-    List<TaskReadDto> getAllByUserId(Long userId);
+    List<TaskReadDto> getAllByUsername(String username);
 
     TaskReadDto create(TaskCreateUpdateDto taskCreateUpdateDto);
 
@@ -19,5 +19,5 @@ public interface TaskService {
 
     void delete(Long id);
 
-    void deleteAllByUserId(Long userId);
+    void deleteAllByUsername(String username);
 }

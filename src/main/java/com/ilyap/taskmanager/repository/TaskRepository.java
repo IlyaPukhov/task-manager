@@ -12,14 +12,14 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("select t " +
             "from Task t " +
             "join UserTask ut " +
-            "where ut.user.id = :userId")
-    List<Task> getAllByUserId(Long userId);
+            "where ut.user.username = :username")
+    List<Task> getAllByUsername(String username);
 
     @Modifying(clearAutomatically = true)
     @Query("delete from Task t " +
             "where t.id in " +
             "(select t1.id from Task t1 " +
             "join UserTask ut " +
-            "where ut.user.id = :userId)")
-    void deleteAllByUserId(Long userId);
+            "where ut.user.username = :username)")
+    void deleteAllByUsername(String username);
 }

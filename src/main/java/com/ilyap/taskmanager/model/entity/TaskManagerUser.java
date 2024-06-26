@@ -1,56 +1,49 @@
 package com.ilyap.taskmanager.model.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.FieldNameConstants;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-@Builder
+@FieldNameConstants
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users_task")
-public class UserTask {
+@Table(name = "users")
+public class TaskManagerUser extends AuditingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    private String username;
+
+    private String password;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @ToString.Exclude
-    private TaskManagerUser user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "task_id")
-    @ToString.Exclude
-    private Task task;
-
-    public void setUser(TaskManagerUser user) {
-        this.user = user;
-        this.user.getUserTasks().add(this);
-    }
-
-    public void setTask(Task task) {
-        this.task = task;
-        this.task.getUserTasks().add(this);
-    }
+    @OneToMany(mappedBy = "user")
+    private List<UserTask> userTasks = new ArrayList<>();
 
     @Override
     public final boolean equals(Object o) {
@@ -59,8 +52,8 @@ public class UserTask {
         Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
-        UserTask userTask = (UserTask) o;
-        return getId() != null && Objects.equals(getId(), userTask.getId());
+        TaskManagerUser that = (TaskManagerUser) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
     }
 
     @Override

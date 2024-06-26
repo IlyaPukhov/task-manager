@@ -1,10 +1,8 @@
 package com.ilyap.taskmanager.controller;
 
-import com.ilyap.taskmanager.model.dto.TaskReadDto;
-import com.ilyap.taskmanager.service.TaskService;
+import com.ilyap.taskmanager.model.dto.UserReadDto;
+import com.ilyap.taskmanager.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,21 +11,17 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/tasks/user/{userId:\\d+}")
+@RequestMapping("/api/v1/tasks/{taskId:\\d+}/users")
 @RequiredArgsConstructor
 public class UserTasksController {
 
-    private final TaskService taskService;
+    private final UserService userService;
+//    private final UserTaskService userTaskService;
 
     @GetMapping
-    public List<TaskReadDto> getByUserId(@PathVariable Long userId) {
-        return taskService.getAllByUserId(userId);
+    public List<UserReadDto> getByTaskId(@PathVariable Long taskId) {
+        return userService.getAllByTaskId(taskId);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteByUserId(@PathVariable Long userId) {
-        taskService.deleteAllByUserId(userId);
-        return ResponseEntity.noContent()
-                .build();
-    }
+    //todo добавить к таске и открепить от таски
 }
