@@ -30,7 +30,7 @@ public abstract class TaskCreateUpdateMapper implements CreateUpdateMapper<TaskC
     }
 
     private void setUserTasks(TaskCreateUpdateDto taskCreateUpdateDto, Task task) {
-        List<UserTask> userTasks = taskCreateUpdateDto.getUsersId().stream()
+        List<UserTask> userTasks = taskCreateUpdateDto.getUsersIds().stream()
                 .map(userId -> userRepository.findById(userId)
                         .orElseThrow())
                 .map(user -> UserTask.builder()

@@ -7,13 +7,13 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
 
+import static com.ilyap.taskmanager.model.dto.UserReadDto.Fields.tasksIds;
 import static com.ilyap.taskmanager.model.entity.TaskManagerUser.Fields.userTasks;
-import static com.ilyap.taskmanager.model.dto.UserReadDto.Fields.tasksId;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UserReadMapper {
 
-    @Mapping(source = userTasks, target = tasksId)
+    @Mapping(source = userTasks, target = tasksIds)
     UserReadDto map(TaskManagerUser user);
 
     default Long fromUserTaskToTaskId(UserTask userTask) {

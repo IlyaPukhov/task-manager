@@ -37,5 +37,5 @@ public class TaskCreateUpdateDto {
     @ValueOfEnum(enumClass = Priority.class)
     String priority;
 
-    List<Long> usersId = new ArrayList<>();
+    List<Long> usersIds = new ArrayList<>();
 }

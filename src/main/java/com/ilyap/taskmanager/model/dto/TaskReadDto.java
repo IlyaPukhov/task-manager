@@ -10,5 +10,5 @@ public record TaskReadDto(long id,
                           String description,
                           String status,
                           String priority,
-                          List<Long> usersId) {
+                          List<Long> usersIds) {
 }

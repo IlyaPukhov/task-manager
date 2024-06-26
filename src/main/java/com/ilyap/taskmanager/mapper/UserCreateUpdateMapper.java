@@ -1,6 +1,7 @@
 package com.ilyap.taskmanager.mapper;
 
 import com.ilyap.taskmanager.model.dto.UserCreateUpdateDto;
+import com.ilyap.taskmanager.model.entity.Role;
 import com.ilyap.taskmanager.model.entity.TaskManagerUser;
 import com.ilyap.taskmanager.model.entity.UserTask;
 import com.ilyap.taskmanager.repository.TaskRepository;
@@ -26,12 +27,13 @@ public abstract class UserCreateUpdateMapper implements CreateUpdateMapper<UserC
 
     @AfterMapping
     protected void mapUserTasks(UserCreateUpdateDto userCreateUpdateDto, @MappingTarget TaskManagerUser user) {
+        user.setRole(Role.USER);
         encodePassword(user);
         setUserTasks(userCreateUpdateDto, user);
     }
 
     private void setUserTasks(UserCreateUpdateDto userCreateUpdateDto, TaskManagerUser user) {
-        List<UserTask> userTasks = userCreateUpdateDto.getTasksId().stream()
+        List<UserTask> userTasks = userCreateUpdateDto.getTasksIds().stream()
                 .map(taskId -> taskRepository.findById(taskId)
                         .orElseThrow())
                 .map(task -> UserTask.builder()

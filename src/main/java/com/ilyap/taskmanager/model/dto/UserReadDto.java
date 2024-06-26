@@ -8,5 +8,5 @@ import java.util.List;
 public record UserReadDto(long id,
                           String username,
                           String role,
-                          List<Long> tasksId) {
+                          List<Long> tasksIds) {
 }
