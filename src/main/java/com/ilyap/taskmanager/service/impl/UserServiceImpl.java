@@ -1,6 +1,6 @@
 package com.ilyap.taskmanager.service.impl;
 
-import com.ilyap.taskmanager.exception.UsernameAlreadyExistsException;
+import com.ilyap.taskmanager.exception.UserAlreadyExistsException;
 import com.ilyap.taskmanager.mapper.UserCreateUpdateMapper;
 import com.ilyap.taskmanager.mapper.UserReadMapper;
 import com.ilyap.taskmanager.model.dto.UserCreateUpdateDto;
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String username = userCreateUpdateDto.getUsername();
         userRepository.findByUsername(username)
                 .ifPresent(user -> {
-                    throw new UsernameAlreadyExistsException(username);
+                    throw new UserAlreadyExistsException(user.getUsername());
                 });
 
         return Optional.of(userCreateUpdateDto)
