@@ -11,23 +11,48 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/tasks/{taskId:\\d+}")
+@RequestMapping("/api/v1/tasks")
 @RequiredArgsConstructor
 public class TaskController {
 
     private final TaskService taskService;
 
     @GetMapping
+    public List<TaskReadDto> getAllTasks() {
+        return taskService.getAll();
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createTask(@Valid TaskCreateUpdateDto taskCreateUpdateDto,
+                                        BindingResult bindingResult) throws BindException {
+        if (bindingResult.hasErrors()) {
+            throw new BindException(bindingResult);
+        }
+        TaskReadDto taskReadDto = taskService.create(taskCreateUpdateDto);
+        return ResponseEntity.created(
+                        ServletUriComponentsBuilder
+                                .fromCurrentRequestUri()
+                                .path("/{taskId}")
+                                .build(taskReadDto.id())
+                )
+                .body(taskReadDto);
+    }
+
+    @GetMapping("/{taskId:\\d+}")
     public TaskReadDto getTaskById(@PathVariable Long taskId) {
         return taskService.getTaskById(taskId);
     }
 
-    @PutMapping
+    @PutMapping("/{taskId:\\d+}")
     public ResponseEntity<?> update(@PathVariable Long taskId,
                                     @Valid TaskCreateUpdateDto taskCreateUpdateDto,
                                     BindingResult bindingResult) throws BindException {
@@ -38,7 +63,7 @@ public class TaskController {
         return ResponseEntity.ok(updatedTask);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{taskId:\\d+}")
     public ResponseEntity<Void> delete(@PathVariable Long taskId) {
         taskService.delete(taskId);
         return ResponseEntity.noContent()

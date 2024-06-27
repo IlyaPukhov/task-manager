@@ -36,10 +36,9 @@ public abstract class UserCreateUpdateMapper implements CreateUpdateMapper<UserC
         List<UserTask> userTasks = userCreateUpdateDto.getTasksIds().stream()
                 .map(taskId -> taskRepository.findById(taskId)
                         .orElseThrow())
-                .map(task -> UserTask.builder()
-                        .user(user)
-                        .task(task)
-                        .build()
+                .map(task -> new UserTask()
+                        .setUser(user)
+                        .setTask(task)
                 ).toList();
 
         user.setUserTasks(userTasks);

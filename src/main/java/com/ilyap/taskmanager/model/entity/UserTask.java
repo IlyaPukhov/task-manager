@@ -9,7 +9,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,6 @@ import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
 
-@Builder
 @Getter
 @Setter
 @ToString
@@ -42,14 +40,16 @@ public class UserTask {
     @ToString.Exclude
     private Task task;
 
-    public void setUser(TaskManagerUser user) {
+    public UserTask setUser(TaskManagerUser user) {
         this.user = user;
         this.user.getUserTasks().add(this);
+        return this;
     }
 
-    public void setTask(Task task) {
+    public UserTask setTask(Task task) {
         this.task = task;
         this.task.getUserTasks().add(this);
+        return this;
     }
 
     @Override
