@@ -10,6 +10,7 @@ import com.ilyap.taskmanager.repository.UserRepository;
 import com.ilyap.taskmanager.repository.UserTaskRepository;
 import com.ilyap.taskmanager.service.UserTaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +24,7 @@ public class UserTaskServiceImpl implements UserTaskService {
     private final UserRepository userRepository;
     private final TaskRepository taskRepository;
 
+    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#taskId, principal.username)")
     @Override
     public void addTaskUser(Long taskId, String username) {
         Task task = taskRepository.findById(taskId).orElseThrow(() -> new TaskNotFoundException(taskId));
@@ -41,6 +43,7 @@ public class UserTaskServiceImpl implements UserTaskService {
         );
     }
 
+    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#taskId, principal.username)")
     @Override
     public void deleteTaskUser(Long taskId, String username) {
         userTaskRepository.deleteByTaskIdAndUserUsername(taskId, username);

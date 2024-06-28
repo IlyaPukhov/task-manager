@@ -5,7 +5,6 @@ import com.ilyap.taskmanager.mapper.TaskCreateUpdateMapper;
 import com.ilyap.taskmanager.mapper.TaskReadMapper;
 import com.ilyap.taskmanager.model.dto.TaskCreateUpdateDto;
 import com.ilyap.taskmanager.model.dto.TaskReadDto;
-import com.ilyap.taskmanager.model.entity.Task;
 import com.ilyap.taskmanager.repository.TaskRepository;
 import com.ilyap.taskmanager.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskCreateUpdateMapper taskCreateUpdateMapper;
     private final TaskRepository taskRepository;
 
-    @PostAuthorize("@taskServiceImpl.isTaskUser(#id, principal.username)")
+    @PostAuthorize("@taskPermissionHandler.isTaskUser(#id, principal.username)")
     @Override
     public TaskReadDto getTaskById(Long id) {
         return taskRepository.findById(id)
@@ -34,6 +33,7 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Override
     public List<TaskReadDto> getAll() {
         return taskRepository.findAll().stream()
@@ -60,7 +60,7 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new RuntimeException("Task could not be created"));
     }
 
-    @PreAuthorize("@taskServiceImpl.isTaskUser(#id, principal.username)")
+    @PreAuthorize("@taskPermissionHandler.isTaskUser(#id, principal.username)")
     @Transactional
     @Override
     public TaskReadDto update(Long id, TaskCreateUpdateDto taskCreateUpdateDto) {
@@ -71,7 +71,7 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
-    @PreAuthorize("@taskServiceImpl.isTaskOwner(#id, principal.username)")
+    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#id, principal.username)")
     @Transactional
     @Override
     public void delete(Long id) {
@@ -83,20 +83,5 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public void deleteAllByUsername(String username) {
         taskRepository.deleteAllByUsername(username);
-    }
-
-    public boolean isTaskOwner(Long taskId, String username) {
-        return taskRepository.findById(taskId)
-                .map(task -> task.getOwner().getUsername().equals(username))
-                .orElse(false);
-    }
-
-    public boolean isTaskUser(Long taskId, String username) {
-        return isTaskOwner(taskId, username)
-                || taskRepository.findById(taskId)
-                .map(Task::getUserTasks)
-                .stream().flatMap(List::stream)
-                .map(ut -> ut.getUser().getUsername())
-                .anyMatch(username::equals);
     }
 }

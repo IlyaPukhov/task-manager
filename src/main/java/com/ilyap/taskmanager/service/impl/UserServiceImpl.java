@@ -8,6 +8,7 @@ import com.ilyap.taskmanager.model.dto.UserReadDto;
 import com.ilyap.taskmanager.repository.UserRepository;
 import com.ilyap.taskmanager.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserCreateUpdateMapper userCreateUpdateMapper;
     private final UserRepository userRepository;
 
+    @PreAuthorize("isAuthenticated()")
     @Override
     public List<UserReadDto> getAllByTaskId(Long taskId) {
         return userRepository.getAllByTaskId(taskId).stream()
@@ -34,6 +36,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .toList();
     }
 
+    @PreAuthorize("isAuthenticated()")
     @Override
     public UserReadDto getUserByUsername(String username) {
         return userRepository.findByUsername(username)
@@ -57,6 +60,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .orElseThrow(() -> new RuntimeException("User could not be registered"));
     }
 
+    @PreAuthorize("#userCreateUpdateDto.username == principal.username")
     @Transactional
     @Override
     public UserReadDto update(UserCreateUpdateDto userCreateUpdateDto) {
@@ -68,6 +72,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User %s not found".formatted(username)));
     }
 
+    @PreAuthorize("#username == principal.username")
     @Transactional
     @Override
     public void delete(String username) {
