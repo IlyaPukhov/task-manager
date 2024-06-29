@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
+    Page<UserReadDto> findAll(Pageable pageable);
+
     Page<UserReadDto> findAllByTaskId(Long taskId, Pageable pageable);
 
     UserReadDto findUserByUsername(String username);

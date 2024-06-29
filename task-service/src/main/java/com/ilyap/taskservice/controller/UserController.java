@@ -1,10 +1,13 @@
 package com.ilyap.taskservice.controller;
 
+import com.ilyap.taskservice.model.dto.PageResponse;
 import com.ilyap.taskservice.model.dto.UserCreateUpdateDto;
 import com.ilyap.taskservice.model.dto.UserReadDto;
 import com.ilyap.taskservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -23,11 +26,16 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class UserController {
 
     private final UserService userService;
-    //todo find all users
+
+    @GetMapping
+    public PageResponse<UserReadDto> findAll(Pageable pageable) {
+        Page<UserReadDto> page = userService.findAll(pageable);
+        return PageResponse.of(page);
+    }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createTask(@Valid UserCreateUpdateDto userCreateUpdateDto,
-                                        BindingResult bindingResult) throws BindException {
+    public ResponseEntity<?> create(@Valid UserCreateUpdateDto userCreateUpdateDto,
+                                    BindingResult bindingResult) throws BindException {
         if (bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
         }
@@ -42,7 +50,7 @@ public class UserController {
     }
 
     @GetMapping("/{username:\\w+}")
-    public UserReadDto findUserByUsername(@PathVariable String username) {
+    public UserReadDto findByUsername(@PathVariable String username) {
         return userService.findUserByUsername(username);
     }
 

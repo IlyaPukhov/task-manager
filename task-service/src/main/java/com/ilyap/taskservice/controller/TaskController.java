@@ -28,13 +28,13 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping
-    public PageResponse<TaskReadDto> findAllTasks(Pageable pageable) {
+    public PageResponse<TaskReadDto> findAll(Pageable pageable) {
         Page<TaskReadDto> page = taskService.findAll(pageable);
         return PageResponse.of(page);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createTask(@Valid TaskCreateUpdateDto taskCreateUpdateDto,
+    public ResponseEntity<?> create(@Valid TaskCreateUpdateDto taskCreateUpdateDto,
                                         BindingResult bindingResult) throws BindException {
         if (bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
@@ -50,7 +50,7 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId:\\d+}")
-    public TaskReadDto findTaskById(@PathVariable Long taskId) {
+    public TaskReadDto findById(@PathVariable Long taskId) {
         return taskService.findTaskById(taskId);
     }
 

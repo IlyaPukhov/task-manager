@@ -31,6 +31,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @PreAuthorize("isAuthenticated()")
     @Override
+    public Page<UserReadDto> findAll(Pageable pageable) {
+        return userRepository.findAll(pageable)
+                .map(userReadMapper::map);
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @Override
     public Page<UserReadDto> findAllByTaskId(Long taskId, Pageable pageable) {
         return userRepository.findAllByTaskId(taskId, pageable)
                 .map(userReadMapper::map);
