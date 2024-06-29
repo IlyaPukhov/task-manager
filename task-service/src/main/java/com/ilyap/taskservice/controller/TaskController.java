@@ -1,10 +1,13 @@
 package com.ilyap.taskservice.controller;
 
+import com.ilyap.taskservice.model.dto.PageResponse;
 import com.ilyap.taskservice.model.dto.TaskCreateUpdateDto;
 import com.ilyap.taskservice.model.dto.TaskReadDto;
 import com.ilyap.taskservice.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -17,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/v1/tasks")
 @RequiredArgsConstructor
@@ -27,12 +28,13 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping
-    public List<TaskReadDto> getAllTasks() {
-        return taskService.getAll();
+    public PageResponse<TaskReadDto> findAll(Pageable pageable) {
+        Page<TaskReadDto> page = taskService.findAll(pageable);
+        return PageResponse.of(page);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<?> createTask(@Valid TaskCreateUpdateDto taskCreateUpdateDto,
+    public ResponseEntity<?> create(@Valid TaskCreateUpdateDto taskCreateUpdateDto,
                                         BindingResult bindingResult) throws BindException {
         if (bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
@@ -48,8 +50,8 @@ public class TaskController {
     }
 
     @GetMapping("/{taskId:\\d+}")
-    public TaskReadDto getTaskById(@PathVariable Long taskId) {
-        return taskService.getTaskById(taskId);
+    public TaskReadDto findById(@PathVariable Long taskId) {
+        return taskService.findTaskById(taskId);
     }
 
     @PutMapping("/{taskId:\\d+}")

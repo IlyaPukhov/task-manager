@@ -1,11 +1,11 @@
 package com.ilyap.taskservice.repository;
 
 import com.ilyap.taskservice.model.entity.Task;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-
-import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
@@ -13,7 +13,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             "from Task t " +
             "join UserTask ut " +
             "where ut.user.username = :username")
-    List<Task> getAllByUsername(String username);
+    Page<Task> findAllByUsername(String username, Pageable pageable);
 
     @Modifying(clearAutomatically = true)
     @Query("delete from Task t " +
