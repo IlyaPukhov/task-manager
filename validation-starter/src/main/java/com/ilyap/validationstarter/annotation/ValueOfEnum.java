@@ -1,6 +1,6 @@
-package com.ilyap.userservice.validation;
+package com.ilyap.validationstarter.annotation;
 
-import com.ilyap.taskservice.validation.impl.ValueOfEnumValidator;
+import com.ilyap.validationstarter.validator.ValueOfEnumValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
