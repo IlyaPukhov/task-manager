@@ -1,5 +1,7 @@
 --liquibase formatted sql
 
 --changeset ilyap:1
-ALTER TABLE task
-    ADD COLUMN owner_id BIGINT;
+DROP TABLE users;
+
+--changeset ilyap:2
+DROP TABLE users_task;

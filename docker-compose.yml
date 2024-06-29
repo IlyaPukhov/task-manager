@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  db-user:
+    container_name: db-user-service
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${USER_SERVICE_DB}
+      POSTGRES_USER: ${USER_SERVICE_USER}
+      POSTGRES_PASSWORD: ${USER_SERVICE_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./volumes/user-service:/data/postgres
+    env_file:
+      - ./.env
+
+  db-task:
+    container_name: db-task-service
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${TASK_SERVICE_DB}
+      POSTGRES_USER: ${TASK_SERVICE_USER}
+      POSTGRES_PASSWORD: ${TASK_SERVICE_PASSWORD}
+    ports:
+      - "5434:5432"
+    volumes:
+      - ./volumes/task-service:/data/postgres
+    env_file:
+      - ./.env
+
+networks:
+  task-manager: { }
