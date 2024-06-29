@@ -9,5 +9,4 @@ public class CommonLoggingStarterApplication {
     public static void main(String[] args) {
         SpringApplication.run(CommonLoggingStarterApplication.class, args);
     }
-
 }
