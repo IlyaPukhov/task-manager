@@ -6,21 +6,16 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.FieldNameConstants;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
-@FieldNameConstants
 @Getter
 @Setter
 @ToString
@@ -40,10 +35,6 @@ public class TaskManagerUser extends AuditingEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "user")
-    private List<UserTask> userTasks = new ArrayList<>();
 
     @Override
     public final boolean equals(Object o) {

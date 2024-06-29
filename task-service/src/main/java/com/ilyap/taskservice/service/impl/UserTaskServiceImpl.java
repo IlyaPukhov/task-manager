@@ -1,6 +1,6 @@
 package com.ilyap.taskservice.service.impl;
 
-import com.ilyap.commonloggingstarter.annotation.Logged;
+import com.ilyap.loggingstarter.annotation.Logged;
 import com.ilyap.taskservice.exception.TaskNotFoundException;
 import com.ilyap.taskservice.exception.UserTaskAlreadyExistsException;
 import com.ilyap.taskservice.model.entity.Task;

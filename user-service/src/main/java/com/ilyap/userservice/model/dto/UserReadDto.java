@@ -1,10 +1,7 @@
 package com.ilyap.userservice.model.dto;
 
-import lombok.experimental.FieldNameConstants;
-
 import java.util.List;
 
-@FieldNameConstants
 public record UserReadDto(long id,
                           String username,
                           String role,

@@ -1,4 +1,4 @@
-package com.ilyap.commonloggingstarter.config;
+package com.ilyap.loggingstarter.config;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Data;

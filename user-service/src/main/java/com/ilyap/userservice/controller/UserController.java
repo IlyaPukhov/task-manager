@@ -1,9 +1,9 @@
 package com.ilyap.userservice.controller;
 
-import com.ilyap.taskservice.model.dto.PageResponse;
-import com.ilyap.taskservice.model.dto.UserCreateUpdateDto;
-import com.ilyap.taskservice.model.dto.UserReadDto;
-import com.ilyap.taskservice.service.UserService;
+import com.ilyap.userservice.model.dto.PageResponse;
+import com.ilyap.userservice.model.dto.UserCreateUpdateDto;
+import com.ilyap.userservice.model.dto.UserReadDto;
+import com.ilyap.userservice.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

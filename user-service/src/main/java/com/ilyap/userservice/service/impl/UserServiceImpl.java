@@ -1,13 +1,13 @@
 package com.ilyap.userservice.service.impl;
 
-import com.ilyap.commonloggingstarter.annotation.Logged;
-import com.ilyap.taskservice.exception.UserAlreadyExistsException;
-import com.ilyap.taskservice.mapper.UserCreateUpdateMapper;
-import com.ilyap.taskservice.mapper.UserReadMapper;
-import com.ilyap.taskservice.model.dto.UserCreateUpdateDto;
-import com.ilyap.taskservice.model.dto.UserReadDto;
-import com.ilyap.taskservice.repository.UserRepository;
-import com.ilyap.taskservice.service.UserService;
+import com.ilyap.loggingstarter.annotation.Logged;
+import com.ilyap.userservice.exception.UserAlreadyExistsException;
+import com.ilyap.userservice.mapper.UserCreateUpdateMapper;
+import com.ilyap.userservice.mapper.UserReadMapper;
+import com.ilyap.userservice.model.dto.UserCreateUpdateDto;
+import com.ilyap.userservice.model.dto.UserReadDto;
+import com.ilyap.userservice.repository.UserRepository;
+import com.ilyap.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

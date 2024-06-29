@@ -1,7 +1,7 @@
 package com.ilyap.userservice.service;
 
-import com.ilyap.taskservice.model.dto.UserCreateUpdateDto;
-import com.ilyap.taskservice.model.dto.UserReadDto;
+import com.ilyap.userservice.model.dto.UserCreateUpdateDto;
+import com.ilyap.userservice.model.dto.UserReadDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

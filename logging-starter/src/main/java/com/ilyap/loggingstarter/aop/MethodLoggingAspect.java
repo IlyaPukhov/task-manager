@@ -1,6 +1,6 @@
-package com.ilyap.commonloggingstarter.aop;
+package com.ilyap.loggingstarter.aop;
 
-import com.ilyap.commonloggingstarter.annotation.Logged;
+import com.ilyap.loggingstarter.annotation.Logged;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -26,7 +26,7 @@ import java.util.List;
 @Aspect
 public class MethodLoggingAspect {
 
-    @Pointcut("@within(com.ilyap.commonloggingstarter.annotation.Logged) || @annotation(com.ilyap.commonloggingstarter.annotation.Logged)")
+    @Pointcut("@within(com.ilyap.loggingstarter.annotation.Logged) || @annotation(com.ilyap.loggingstarter.annotation.Logged)")
     public void isLogged() {
     }
 

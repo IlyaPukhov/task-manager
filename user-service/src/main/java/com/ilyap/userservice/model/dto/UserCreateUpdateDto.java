@@ -1,7 +1,7 @@
 package com.ilyap.userservice.model.dto;
 
 import com.ilyap.userservice.model.entity.Role;
-import com.ilyap.userservice.validation.ValueOfEnum;
+import com.ilyap.validationstarter.annotation.ValueOfEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;

@@ -11,8 +11,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
-import static com.ilyap.taskservice.model.entity.Role.ADMIN;
-import static com.ilyap.taskservice.model.entity.Role.USER;
+import static com.ilyap.userservice.model.entity.Role.ADMIN;
+import static com.ilyap.userservice.model.entity.Role.USER;
 
 @Configuration
 @EnableWebSecurity

@@ -5,6 +5,8 @@ import com.ilyap.taskservice.model.entity.Role;
 import com.ilyap.taskservice.model.entity.TaskManagerUser;
 import com.ilyap.taskservice.model.entity.UserTask;
 import com.ilyap.taskservice.repository.TaskRepository;
+import com.ilyap.userservice.model.dto.UserCreateUpdateDto;
+import com.ilyap.userservice.model.entity.TaskManagerUser;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
@@ -17,7 +19,7 @@ import java.util.List;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public abstract class UserCreateUpdateMapper implements CreateUpdateMapper<UserCreateUpdateDto, TaskManagerUser> {
+public abstract class UserCreateUpdateMapper {
 
     @Autowired
     private TaskRepository taskRepository;
@@ -25,9 +27,12 @@ public abstract class UserCreateUpdateMapper implements CreateUpdateMapper<UserC
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    public abstract TaskManagerUser map(UserCreateUpdateDto createUpdateDto);
+
+    public abstract TaskManagerUser map(UserCreateUpdateDto createUpdateDto, @MappingTarget TaskManagerUser user);
+
     @AfterMapping
     protected void mapUserTasks(UserCreateUpdateDto userCreateUpdateDto, @MappingTarget TaskManagerUser user) {
-        user.setRole(Role.USER);
         encodePassword(user);
         setUserTasks(userCreateUpdateDto, user);
     }

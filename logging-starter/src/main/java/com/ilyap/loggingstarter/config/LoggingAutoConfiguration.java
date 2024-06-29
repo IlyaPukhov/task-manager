@@ -1,6 +1,6 @@
-package com.ilyap.commonloggingstarter.config;
+package com.ilyap.loggingstarter.config;
 
-import com.ilyap.commonloggingstarter.aop.MethodLoggingAspect;
+import com.ilyap.loggingstarter.aop.MethodLoggingAspect;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

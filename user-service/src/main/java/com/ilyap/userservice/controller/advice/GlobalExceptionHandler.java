@@ -1,8 +1,6 @@
 package com.ilyap.userservice.controller.advice;
 
-import com.ilyap.taskservice.exception.TaskNotFoundException;
-import com.ilyap.taskservice.exception.UserAlreadyExistsException;
-import com.ilyap.taskservice.exception.UserTaskAlreadyExistsException;
+import com.ilyap.userservice.exception.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +19,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(problemDetail);
     }
 
-    @ExceptionHandler({UserAlreadyExistsException.class)
+    @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ProblemDetail> handleEntityAlreadyExistsException(RuntimeException exception) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
         return ResponseEntity.status(HttpStatus.CONFLICT)
