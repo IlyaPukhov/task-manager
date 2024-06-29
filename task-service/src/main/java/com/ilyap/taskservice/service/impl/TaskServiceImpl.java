@@ -1,5 +1,6 @@
 package com.ilyap.taskservice.service.impl;
 
+import com.ilyap.commonloggingstarter.annotation.Logged;
 import com.ilyap.taskservice.exception.TaskNotFoundException;
 import com.ilyap.taskservice.mapper.TaskCreateUpdateMapper;
 import com.ilyap.taskservice.mapper.TaskReadMapper;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
+@Logged
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class TaskServiceImpl implements TaskService {

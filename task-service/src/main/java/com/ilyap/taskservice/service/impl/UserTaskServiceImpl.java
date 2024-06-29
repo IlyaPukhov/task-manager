@@ -1,5 +1,6 @@
 package com.ilyap.taskservice.service.impl;
 
+import com.ilyap.commonloggingstarter.annotation.Logged;
 import com.ilyap.taskservice.exception.TaskNotFoundException;
 import com.ilyap.taskservice.exception.UserTaskAlreadyExistsException;
 import com.ilyap.taskservice.model.entity.Task;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Logged
 @RequiredArgsConstructor
 @Transactional
 public class UserTaskServiceImpl implements UserTaskService {
