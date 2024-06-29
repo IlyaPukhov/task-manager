@@ -1,5 +1,6 @@
 package com.ilyap.taskservice.service.impl;
 
+import com.ilyap.commonloggingstarter.annotation.Logged;
 import com.ilyap.taskservice.exception.UserAlreadyExistsException;
 import com.ilyap.taskservice.mapper.UserCreateUpdateMapper;
 import com.ilyap.taskservice.mapper.UserReadMapper;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
+@Logged
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService, UserDetailsService {
