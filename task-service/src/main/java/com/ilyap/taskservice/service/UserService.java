@@ -2,14 +2,14 @@ package com.ilyap.taskservice.service;
 
 import com.ilyap.taskservice.model.dto.UserCreateUpdateDto;
 import com.ilyap.taskservice.model.dto.UserReadDto;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface UserService {
 
-    List<UserReadDto> getAllByTaskId(Long taskId);
+    Page<UserReadDto> findAllByTaskId(Long taskId, Pageable pageable);
 
-    UserReadDto getUserByUsername(String username);
+    UserReadDto findUserByUsername(String username);
 
     UserReadDto registerUser(UserCreateUpdateDto userCreateUpdateDto);
 

@@ -8,12 +8,13 @@ import com.ilyap.taskservice.model.dto.TaskReadDto;
 import com.ilyap.taskservice.repository.TaskRepository;
 import com.ilyap.taskservice.service.TaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,7 +28,7 @@ public class TaskServiceImpl implements TaskService {
 
     @PostAuthorize("@taskPermissionHandler.isTaskUser(#id, principal.username)")
     @Override
-    public TaskReadDto getTaskById(Long id) {
+    public TaskReadDto findTaskById(Long id) {
         return taskRepository.findById(id)
                 .map(taskReadMapper::map)
                 .orElseThrow(() -> new TaskNotFoundException(id));
@@ -35,18 +36,16 @@ public class TaskServiceImpl implements TaskService {
 
     @PreAuthorize("isAuthenticated()")
     @Override
-    public List<TaskReadDto> getAll() {
-        return taskRepository.findAll().stream()
-                .map(taskReadMapper::map)
-                .toList();
+    public Page<TaskReadDto> findAll(Pageable pageable) {
+        return taskRepository.findAll(pageable)
+                .map(taskReadMapper::map);
     }
 
     @PreAuthorize("isAuthenticated()")
     @Override
-    public List<TaskReadDto> getAllByUsername(String username) {
-        return taskRepository.getAllByUsername(username).stream()
-                .map(taskReadMapper::map)
-                .toList();
+    public Page<TaskReadDto> findAllByUsername(String username, Pageable pageable) {
+        return taskRepository.findAllByUsername(username, pageable)
+                .map(taskReadMapper::map);
     }
 
     @PreAuthorize("hasRole('USER')")

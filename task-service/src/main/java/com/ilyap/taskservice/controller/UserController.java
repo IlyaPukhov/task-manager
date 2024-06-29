@@ -23,6 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class UserController {
 
     private final UserService userService;
+    //todo find all users
 
     @PostMapping("/create")
     public ResponseEntity<?> createTask(@Valid UserCreateUpdateDto userCreateUpdateDto,
@@ -41,8 +42,8 @@ public class UserController {
     }
 
     @GetMapping("/{username:\\w+}")
-    public UserReadDto getUserByUsername(@PathVariable String username) {
-        return userService.getUserByUsername(username);
+    public UserReadDto findUserByUsername(@PathVariable String username) {
+        return userService.findUserByUsername(username);
     }
 
     @PutMapping("/{username:\\w+}")
