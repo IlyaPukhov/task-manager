@@ -18,13 +18,4 @@ public class TaskPermissionHandler {
                 .map(task -> task.getOwner().getUsername().equals(username))
                 .orElse(false);
     }
-
-    public boolean isTaskUser(Long taskId, String username) {
-        return isTaskOwner(taskId, username)
-                || taskRepository.findById(taskId)
-                .map(Task::getUserTasks)
-                .stream().flatMap(List::stream)
-                .map(ut -> ut.getUser().getUsername())
-                .anyMatch(username::equals);
-    }
 }

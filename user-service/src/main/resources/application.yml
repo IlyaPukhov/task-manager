@@ -2,7 +2,7 @@ spring:
   application.name: user-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/db-user-service
+    url: jdbc:postgresql://localhost:5433/user-service
     username:
     password:
     driver-class-name: org.postgresql.Driver
@@ -16,3 +16,6 @@ spring:
 logging:
   level:
     root: info
+
+server:
+  port: 8081

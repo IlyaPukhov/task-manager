@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,14 +30,22 @@ public class TaskController {
     private final TaskService taskService;
 
     @GetMapping
-    public PageResponse<TaskReadDto> findAll(Pageable pageable) {
-        Page<TaskReadDto> page = taskService.findAll(pageable);
+    public PageResponse<TaskReadDto> findAll(Pageable pageable,
+                                             @AuthenticationPrincipal UserDetails userDetails) {
+        Page<TaskReadDto> page = taskService.findAll(userDetails, pageable);
+        return PageResponse.of(page);
+    }
+
+    @GetMapping("/user/{ownerId:\\d+}")
+    public PageResponse<TaskReadDto> findAllByUser(Pageable pageable,
+                                                   @PathVariable Long ownerId) {
+        Page<TaskReadDto> page = taskService.findAllByUserId(ownerId, pageable);
         return PageResponse.of(page);
     }
 
     @PostMapping("/create")
     public ResponseEntity<?> create(@Valid TaskCreateUpdateDto taskCreateUpdateDto,
-                                        BindingResult bindingResult) throws BindException {
+                                    BindingResult bindingResult) throws BindException {
         if (bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
         }

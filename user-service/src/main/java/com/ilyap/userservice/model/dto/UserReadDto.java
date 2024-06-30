@@ -1,9 +1,14 @@
 package com.ilyap.userservice.model.dto;
 
+import lombok.Data;
+
 import java.util.List;
 
-public record UserReadDto(long id,
-                          String username,
-                          String role,
-                          List<Long> tasksIds) {
+@Data
+public class UserReadDto {
+
+    private long id;
+    private String username;
+    private String role;
+    private List<Long> tasksIds;
 }

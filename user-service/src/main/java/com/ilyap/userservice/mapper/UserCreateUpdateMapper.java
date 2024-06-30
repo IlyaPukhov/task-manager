@@ -1,10 +1,5 @@
 package com.ilyap.userservice.mapper;
 
-import com.ilyap.taskservice.model.dto.UserCreateUpdateDto;
-import com.ilyap.taskservice.model.entity.Role;
-import com.ilyap.taskservice.model.entity.TaskManagerUser;
-import com.ilyap.taskservice.model.entity.UserTask;
-import com.ilyap.taskservice.repository.TaskRepository;
 import com.ilyap.userservice.model.dto.UserCreateUpdateDto;
 import com.ilyap.userservice.model.entity.TaskManagerUser;
 import org.mapstruct.AfterMapping;
@@ -15,14 +10,9 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.List;
-
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class UserCreateUpdateMapper {
-
-    @Autowired
-    private TaskRepository taskRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -32,24 +22,7 @@ public abstract class UserCreateUpdateMapper {
     public abstract TaskManagerUser map(UserCreateUpdateDto createUpdateDto, @MappingTarget TaskManagerUser user);
 
     @AfterMapping
-    protected void mapUserTasks(UserCreateUpdateDto userCreateUpdateDto, @MappingTarget TaskManagerUser user) {
-        encodePassword(user);
-        setUserTasks(userCreateUpdateDto, user);
-    }
-
-    private void setUserTasks(UserCreateUpdateDto userCreateUpdateDto, TaskManagerUser user) {
-        List<UserTask> userTasks = userCreateUpdateDto.getTasksIds().stream()
-                .map(taskId -> taskRepository.findById(taskId)
-                        .orElseThrow())
-                .map(task -> new UserTask()
-                        .setUser(user)
-                        .setTask(task)
-                ).toList();
-
-        user.setUserTasks(userTasks);
-    }
-
-    private void encodePassword(TaskManagerUser user) {
+    protected void mapUserTasks(@MappingTarget TaskManagerUser user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
     }

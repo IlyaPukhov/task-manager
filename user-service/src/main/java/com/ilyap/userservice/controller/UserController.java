@@ -44,21 +44,19 @@ public class UserController {
                         ServletUriComponentsBuilder
                                 .fromCurrentRequestUri()
                                 .path("/{username}")
-                                .build(userReadDto.username())
+                                .build(userReadDto.getUsername())
                 )
                 .body(userReadDto);
     }
 
     @GetMapping("/{username:\\w+}")
     public UserReadDto findByUsername(@PathVariable String username) {
-        return userService.findUserByUsername(username);
+        return userService.findByUsername(username);
     }
 
     @GetMapping("tasks/{taskId:\\d+}")
-    public PageResponse<UserReadDto> findByTaskId(@PathVariable Long taskId,
-                                                  Pageable pageable) {
-        Page<UserReadDto> page = userService.findAllByTaskId(taskId, pageable);
-        return PageResponse.of(page);
+    public UserReadDto findByTaskId(@PathVariable Long taskId) {
+        return userService.findOwnerByTaskId(taskId);
     }
 
     @PutMapping("/{username:\\w+}")

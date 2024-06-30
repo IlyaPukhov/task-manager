@@ -9,9 +9,9 @@ public interface UserService {
 
     Page<UserReadDto> findAll(Pageable pageable);
 
-    Page<UserReadDto> findAllByTaskId(Long taskId, Pageable pageable);
+    UserReadDto findOwnerByTaskId(Long taskId);
 
-    UserReadDto findUserByUsername(String username);
+    UserReadDto findByUsername(String username);
 
     UserReadDto registerUser(UserCreateUpdateDto userCreateUpdateDto);
 
