@@ -20,5 +20,5 @@ public interface TaskService {
 
     void delete(Long id);
 
-    void deleteAllByUsername(String username);
+    void deleteAllByUserId(Long userId);
 }

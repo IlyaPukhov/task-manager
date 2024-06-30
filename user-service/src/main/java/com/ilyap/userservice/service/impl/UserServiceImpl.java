@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     @Override
     public UserReadDto registerUser(UserCreateUpdateDto userCreateUpdateDto) {
-        String username = userCreateUpdateDto.getUsername();
+        String username = userCreateUpdateDto.username();
         userRepository.findByUsername(username)
                 .ifPresent(user -> {
                     throw new UserAlreadyExistsException(user.getUsername());
@@ -78,7 +78,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     @Override
     public UserReadDto update(UserCreateUpdateDto userCreateUpdateDto) {
-        String username = userCreateUpdateDto.getUsername();
+        String username = userCreateUpdateDto.username();
         return userRepository.findByUsername(username)
                 .map(user -> userCreateUpdateMapper.map(userCreateUpdateDto, user))
                 .map(userRepository::save)

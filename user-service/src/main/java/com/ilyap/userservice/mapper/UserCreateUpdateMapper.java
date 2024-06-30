@@ -22,7 +22,7 @@ public abstract class UserCreateUpdateMapper {
     public abstract TaskManagerUser map(UserCreateUpdateDto createUpdateDto, @MappingTarget TaskManagerUser user);
 
     @AfterMapping
-    protected void mapUserTasks(@MappingTarget TaskManagerUser user) {
+    protected void encodePassword(@MappingTarget TaskManagerUser user) {
         String encodedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
     }

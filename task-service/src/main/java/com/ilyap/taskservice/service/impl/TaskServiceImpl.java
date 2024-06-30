@@ -4,7 +4,6 @@ import com.ilyap.loggingstarter.annotation.Logged;
 import com.ilyap.taskservice.exception.TaskNotFoundException;
 import com.ilyap.taskservice.mapper.TaskCreateUpdateMapper;
 import com.ilyap.taskservice.mapper.TaskReadMapper;
-import com.ilyap.taskservice.model.dto.PageResponse;
 import com.ilyap.taskservice.model.dto.TaskCreateUpdateDto;
 import com.ilyap.taskservice.model.dto.TaskReadDto;
 import com.ilyap.taskservice.repository.TaskRepository;
@@ -41,12 +40,12 @@ public class TaskServiceImpl implements TaskService {
     @PreAuthorize("isAuthenticated()")
     @Override
     public Page<TaskReadDto> findAll(UserDetails userDetails, Pageable pageable) {
-        return taskRepository.findAllByUsername(userDetails.getUsername(), pageable)
+        return taskRepository.findAll(pageable)
                 .map(taskReadMapper::map);
     }
 
     @Override
-    public PageResponse<TaskReadDto> findAllByUserId(Long userId, Pageable pageable) {
+    public Page<TaskReadDto> findAllByUserId(Long userId, Pageable pageable) {
         return taskRepository.findAllByOwnerId(userId, pageable)
                 .map(taskReadMapper::map);
     }
@@ -80,10 +79,10 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.deleteById(id);
     }
 
-    @PreAuthorize("#username == principal.username")
+    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#userId, principal.username)")
     @Transactional
     @Override
-    public void deleteAllByUsername(String username) {
-        taskRepository.deleteAllByUsername(username);
+    public void deleteAllByUserId(Long userId) {
+        taskRepository.deleteAllByOwnerId(userId);
     }
 }
