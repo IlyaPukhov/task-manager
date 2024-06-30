@@ -33,6 +33,8 @@ public class TaskManagerUser extends AuditingEntity {
 
     private String password;
 
+    private String biography;
+
     @Enumerated(EnumType.STRING)
     private Role role;
 

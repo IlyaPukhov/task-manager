@@ -9,6 +9,7 @@ public class UserReadDto {
 
     private long id;
     private String username;
+    private String biography;
     private String role;
     private List<Long> tasksIds;
 }
