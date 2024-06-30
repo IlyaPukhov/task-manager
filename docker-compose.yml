@@ -1,4 +1,9 @@
 version: '3.8'
+
+networks:
+  task-manager:
+    driver: bridge
+
 services:
   db-user:
     container_name: db-user-service
@@ -52,6 +57,8 @@ services:
       - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
       - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
 
-networks:
-  task-manager:
-    driver: bridge
+  grafana-loki:
+    container_name: grafana-loki
+    image: grafana/loki:3.0.0
+    ports:
+      - '3100:3100'
