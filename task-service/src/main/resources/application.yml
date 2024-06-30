@@ -1,6 +1,6 @@
+server:
+  port: 8082
 spring:
-  application.name: task-service
-
   datasource:
     url: jdbc:postgresql://localhost:5434/task-service
     username:
@@ -12,10 +12,13 @@ spring:
       format_sql: true
       hbm2ddl.auto: validate
     open-in-view: false
-
 logging:
   level:
     root: info
-
-server:
-  port: 8082
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus

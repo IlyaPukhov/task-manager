@@ -1,6 +1,6 @@
+server:
+  port: 8081
 spring:
-  application.name: user-service
-
   datasource:
     url: jdbc:postgresql://localhost:5433/user-service
     username:
@@ -12,10 +12,13 @@ spring:
       format_sql: true
       hbm2ddl.auto: validate
     open-in-view: false
-
 logging:
   level:
     root: info
-
-server:
-  port: 8081
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
