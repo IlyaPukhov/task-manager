@@ -4,6 +4,7 @@ import java.util.List;
 
 public record UserResponse(long id,
                            String username,
+                           String biography,
                            String role,
                            List<Long> tasksIds) {
 }
