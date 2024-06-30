@@ -4,14 +4,15 @@ import com.ilyap.taskservice.model.dto.TaskCreateUpdateDto;
 import com.ilyap.taskservice.model.dto.TaskReadDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface TaskService {
 
     TaskReadDto findTaskById(Long id);
 
-    Page<TaskReadDto> findAll(Pageable pageable);
+    Page<TaskReadDto> findAll(UserDetails userDetails, Pageable pageable);
 
-    Page<TaskReadDto> findAllByUsername(String username, Pageable pageable);
+    Page<TaskReadDto> findAllByUserId(Long userId, Pageable pageable);
 
     TaskReadDto create(TaskCreateUpdateDto taskCreateUpdateDto);
 
@@ -19,5 +20,5 @@ public interface TaskService {
 
     void delete(Long id);
 
-    void deleteAllByUsername(String username);
+    void deleteAllByUserId(Long userId);
 }

@@ -1,6 +1,6 @@
 package com.ilyap.taskservice.service.impl;
 
-import com.ilyap.commonloggingstarter.annotation.Logged;
+import com.ilyap.loggingstarter.annotation.Logged;
 import com.ilyap.taskservice.exception.TaskNotFoundException;
 import com.ilyap.taskservice.mapper.TaskCreateUpdateMapper;
 import com.ilyap.taskservice.mapper.TaskReadMapper;
@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskCreateUpdateMapper taskCreateUpdateMapper;
     private final TaskRepository taskRepository;
 
-    @PostAuthorize("@taskPermissionHandler.isTaskUser(#id, principal.username)")
+    @PostAuthorize("@taskPermissionHandler.isTaskOwner(#id, principal.username)")
     @Override
     public TaskReadDto findTaskById(Long id) {
         return taskRepository.findById(id)
@@ -38,15 +39,14 @@ public class TaskServiceImpl implements TaskService {
 
     @PreAuthorize("isAuthenticated()")
     @Override
-    public Page<TaskReadDto> findAll(Pageable pageable) {
+    public Page<TaskReadDto> findAll(UserDetails userDetails, Pageable pageable) {
         return taskRepository.findAll(pageable)
                 .map(taskReadMapper::map);
     }
 
-    @PreAuthorize("isAuthenticated()")
     @Override
-    public Page<TaskReadDto> findAllByUsername(String username, Pageable pageable) {
-        return taskRepository.findAllByUsername(username, pageable)
+    public Page<TaskReadDto> findAllByUserId(Long userId, Pageable pageable) {
+        return taskRepository.findAllByOwnerId(userId, pageable)
                 .map(taskReadMapper::map);
     }
 
@@ -61,7 +61,7 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new RuntimeException("Task could not be created"));
     }
 
-    @PreAuthorize("@taskPermissionHandler.isTaskUser(#id, principal.username)")
+    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#id, principal.username)")
     @Transactional
     @Override
     public TaskReadDto update(Long id, TaskCreateUpdateDto taskCreateUpdateDto) {
@@ -79,10 +79,10 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.deleteById(id);
     }
 
-    @PreAuthorize("#username == principal.username")
+    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#userId, principal.username)")
     @Transactional
     @Override
-    public void deleteAllByUsername(String username) {
-        taskRepository.deleteAllByUsername(username);
+    public void deleteAllByUserId(Long userId) {
+        taskRepository.deleteAllByOwnerId(userId);
     }
 }
