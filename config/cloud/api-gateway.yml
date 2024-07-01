@@ -1,3 +1,19 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: user-service-route
+          uri: lb://user-service
+          predicates:
+            - Host=/api/v1/users/**
+        - id: task-service-route
+          uri: lb://task-service
+          predicates:
+            - Host=/api/v1/tasks/**
+        - id: productivity-service-route
+          uri: lb://productivity-service
+          predicates:
+            - Host=/api/v1/productivity/**
 eureka:
   client:
     service-url:
