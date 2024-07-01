@@ -1,15 +1,8 @@
 server:
   port: 8761
-eureka:
-  instance:
-    hostname: localhost
-  client:
-    register-with-eureka: false
-    fetch-registry: false
-management:
-  zipkin:
-    tracing:
-      endpoint: http://host.docker.internal:9411/api/v2/spans
-  tracing:
-    sampling:
-      probability: 1.0
+spring:
+  config:
+    import: 'configserver:'
+  cloud:
+    config:
+      uri: http://${CONFIG_SERVER_USER}:${CONFIG_SERVER_PASSWORD}@localhost:8888

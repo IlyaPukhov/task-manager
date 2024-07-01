@@ -21,10 +21,9 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http.authorizeHttpRequests(authorizeHttpRequests ->
-                        authorizeHttpRequests
-                                .requestMatchers("/api/v1/**").hasAnyAuthority(USER.getAuthority(), ADMIN.getAuthority())
-                                .requestMatchers("/actuator/**").permitAll())
+        return http.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
+                        .requestMatchers("/api/v1/**").hasAnyAuthority(USER.getAuthority(), ADMIN.getAuthority())
+                        .requestMatchers("/actuator/**").permitAll())
                 .httpBasic(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionManagement -> sessionManagement
