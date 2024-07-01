@@ -1,6 +1,8 @@
 server:
   port: 8082
 spring:
+  application:
+    name: task-service
   datasource:
     url: jdbc:postgresql://localhost:5434/task-service
     username:
@@ -22,3 +24,9 @@ management:
         include:
           - health
           - prometheus
+  zipkin:
+    tracing:
+      endpoint: http://host.docker.internal:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
