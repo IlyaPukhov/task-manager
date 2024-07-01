@@ -1,6 +1,6 @@
 spring:
   application:
-    name: auth-service
+    name: api-gateway
 eureka:
   client:
     service-url:
