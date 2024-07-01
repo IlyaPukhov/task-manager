@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5434/task-service
-    username: ${TASK_SERVICE_USER}
-    password: ${TASK_SERVICE_PASSWORD}
+    username:
+    password:
     driver-class-name: org.postgresql.Driver
   jpa:
     properties.hibernate:
