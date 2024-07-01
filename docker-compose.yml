@@ -65,6 +65,7 @@ services:
     container_name: grafana-tempo
     image: grafana/tempo:2.5.0
     ports:
+      - '3200:3200'
       - '9411:9411' # zipkin
     volumes:
       - ./config/tempo/tempo.yml:/etc/grafana-tempo/tempo.yml

@@ -11,7 +11,6 @@ import com.ilyap.taskservice.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,7 @@ public class TaskServiceImpl implements TaskService {
     private final TaskCreateUpdateMapper taskCreateUpdateMapper;
     private final TaskRepository taskRepository;
 
-    @PostAuthorize("@taskPermissionHandler.isTaskOwner(#id, principal.username)")
+    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#id, principal.username)")
     @Override
     public TaskReadDto findTaskById(Long id) {
         return taskRepository.findById(id)
