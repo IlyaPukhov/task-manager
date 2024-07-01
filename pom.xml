@@ -12,6 +12,7 @@
 
     <modules>
         <module>api-gateway</module>
+        <module>eureka-server</module>
         <module>auth-service</module>
         <module>productivity-service</module>
         <module>storage-service</module>
