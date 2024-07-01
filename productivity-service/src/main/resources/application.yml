@@ -1,14 +1,10 @@
+server:
+  port: 8084
 spring:
   application:
     name: productivity-service
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-management:
-  zipkin:
-    tracing:
-      endpoint: http://host.docker.internal:9411/api/v2/spans
-  tracing:
-    sampling:
-      probability: 1.0
+  config:
+    import: 'configserver:'
+  cloud:
+    config:
+      uri: http://config:config-password@localhost:8888
