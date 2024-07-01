@@ -47,8 +47,6 @@ services:
     image: grafana/grafana:11.1.0
     ports:
       - '3000:3000'
-    links:
-      - victoria-metrics:victoria-metrics
     volumes:
       - ./data/grafana:/var/lib/grafana
     env_file:
@@ -62,3 +60,13 @@ services:
     image: grafana/loki:3.0.0
     ports:
       - '3100:3100'
+
+  grafana-tempo-tracing:
+    container_name: grafana-tempo
+    image: grafana/tempo:2.5.0
+    ports:
+      - '3200:3200'
+      - '9411:9411' # zipkin
+    volumes:
+      - ./config/tempo/tempo.yml:/etc/grafana-tempo/tempo.yml
+    command: '-config.file=/etc/grafana-tempo/tempo.yml'

@@ -1,6 +1,8 @@
 server:
   port: 8081
 spring:
+  application:
+    name: user-service
   datasource:
     url: jdbc:postgresql://localhost:5433/user-service
     username:
@@ -22,3 +24,9 @@ management:
         include:
           - health
           - prometheus
+  zipkin:
+    tracing:
+      endpoint: http://host.docker.internal:9411/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
