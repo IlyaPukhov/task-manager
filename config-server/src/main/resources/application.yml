@@ -10,7 +10,7 @@ spring:
           search-locations: file:///${user.home}/IdeaProjects/task-manager/config/cloud
   security:
     user:
-      name: ${CONFIG_SERVER_USER}
-      password: ${CONFIG_SERVER_PASSWORD}
+      name: config
+      password: config-password
       roles:
         - CONFIG
