@@ -5,4 +5,4 @@ spring:
     import: 'configserver:'
   cloud:
     config:
-      uri: http://config:config-password@localhost:8888
+      uri: http://${CONFIG_SERVER_USER}:${CONFIG_SERVER_PASSWORD}@localhost:8888
