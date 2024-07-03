@@ -1,6 +1,6 @@
-package com.ilyap.loggingstarter.config;
+package com.ilyap.logging.config;
 
-import com.ilyap.loggingstarter.aop.MethodLoggingAspect;
+import com.ilyap.logging.aop.MethodLoggingAspect;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -39,8 +39,8 @@ public class LoggingAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    MethodLoggingAspect loggingMethodExecutionAspect() {
+    MethodLoggingAspect loggingMethodExecutionAspect(LoggingProperties properties) {
         log.info("MethodLoggingAspect bean created");
-        return new MethodLoggingAspect();
+        return new MethodLoggingAspect(properties);
     }
 }

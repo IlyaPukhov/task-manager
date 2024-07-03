@@ -1,6 +1,6 @@
 package com.ilyap.userservice.service.impl;
 
-import com.ilyap.loggingstarter.annotation.Logged;
+import com.ilyap.logging.annotation.Logged;
 import com.ilyap.userservice.client.TaskServiceClient;
 import com.ilyap.userservice.exception.UserAlreadyExistsException;
 import com.ilyap.userservice.exception.UserNotFoundException;

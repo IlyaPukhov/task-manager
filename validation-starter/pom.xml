@@ -13,6 +13,7 @@
     <groupId>com.ilyap</groupId>
     <artifactId>validation-starter</artifactId>
     <version>1.0.0</version>
+    <packaging>jar</packaging>
 
     <properties>
         <java.version>21</java.version>

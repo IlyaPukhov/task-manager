@@ -1,4 +1,4 @@
-package com.ilyap.loggingstarter.config;
+package com.ilyap.logging.config;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Data;
@@ -20,6 +20,12 @@ public class LoggingProperties {
      * Whether to enable Logging support.
      */
     private boolean enabled;
+
+    /**
+     * Enabling request time logging.
+     */
+    private boolean timeLogging = true;
+
 
     @PostConstruct
     void init() {

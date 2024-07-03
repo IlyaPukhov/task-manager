@@ -1,6 +1,6 @@
 package com.ilyap.taskservice.service.impl;
 
-import com.ilyap.loggingstarter.annotation.Logged;
+import com.ilyap.logging.annotation.Logged;
 import com.ilyap.taskservice.exception.TaskNotFoundException;
 import com.ilyap.taskservice.mapper.TaskCreateUpdateMapper;
 import com.ilyap.taskservice.mapper.TaskReadMapper;
