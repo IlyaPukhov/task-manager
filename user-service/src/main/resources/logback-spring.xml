@@ -4,12 +4,12 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
 
-    <if condition='isDefined("LOKI_PUSH_URL")'>
+    <if condition='isDefined("LOKI_URL")'>
         <then>
             <appender name="LOKI"
                       class="com.github.loki4j.logback.Loki4jAppender">
                 <http>
-                    <url>${LOKI_PUSH_URL}</url>
+                    <url>${LOKI_URL}/loki/api/v1/push</url>
                 </http>
                 <format class="">
                     <label>
