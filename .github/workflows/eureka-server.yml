@@ -1,17 +1,17 @@
-name: 'API Gateway CI'
+name: 'Discovery Service CI'
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'api-gateway/**'
+      - 'eureka-server/**'
 jobs:
-  api-gateway:
+  eureka-server:
     env:
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
       DOCKER_PASSWORD: ${{secrets.DOCKER_ACCESS_TOKEN}}
-      PATH: api-gateway
+      PATH: eureka-server
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository

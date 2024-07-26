@@ -1,17 +1,17 @@
-name: 'API Gateway CI'
+name: 'Productivity Service CI'
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'api-gateway/**'
+      - 'productivity-service/**'
 jobs:
-  api-gateway:
+  productivity-service:
     env:
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
       DOCKER_PASSWORD: ${{secrets.DOCKER_ACCESS_TOKEN}}
-      PATH: api-gateway
+      PATH: productivity-service
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository

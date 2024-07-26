@@ -1,17 +1,17 @@
-name: 'API Gateway CI'
+name: 'Task Service CI'
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'api-gateway/**'
+      - 'task-service/**'
 jobs:
-  api-gateway:
+  task-service:
     env:
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
       DOCKER_PASSWORD: ${{secrets.DOCKER_ACCESS_TOKEN}}
-      PATH: api-gateway
+      PATH: task-service
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository

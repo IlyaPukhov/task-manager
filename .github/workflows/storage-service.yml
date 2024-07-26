@@ -1,17 +1,17 @@
-name: 'API Gateway CI'
+name: 'Storage Service CI'
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'api-gateway/**'
+      - 'storage-service/**'
 jobs:
-  api-gateway:
+  storage-service:
     env:
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
       DOCKER_PASSWORD: ${{secrets.DOCKER_ACCESS_TOKEN}}
-      PATH: api-gateway
+      PATH: storage-service
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository

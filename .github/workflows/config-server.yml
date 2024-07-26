@@ -1,17 +1,17 @@
-name: 'API Gateway CI'
+name: 'Config Server CI'
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'api-gateway/**'
+      - 'config-server/**'
 jobs:
-  api-gateway:
+  config-server:
     env:
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
       DOCKER_PASSWORD: ${{secrets.DOCKER_ACCESS_TOKEN}}
-      PATH: api-gateway
+      PATH: config-server
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
