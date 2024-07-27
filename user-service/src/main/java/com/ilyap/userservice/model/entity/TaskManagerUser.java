@@ -1,5 +1,6 @@
 package com.ilyap.userservice.model.entity;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,8 +13,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -29,14 +33,16 @@ public class TaskManagerUser extends AuditingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NaturalId
     private String username;
 
     private String password;
 
     private String biography;
 
+    @ElementCollection
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private List<Role> roles = new ArrayList<>();
 
     @Override
     public final boolean equals(Object o) {
