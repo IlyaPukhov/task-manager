@@ -5,5 +5,5 @@ public record TaskReadDto(long id,
                           String description,
                           String status,
                           String priority,
-                          Long ownerId) {
+                          String ownerUsername) {
 }

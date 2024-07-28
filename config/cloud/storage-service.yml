@@ -5,7 +5,7 @@ eureka:
     prefer-ip-address: true
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://host.docker.internal:8761/eureka/
     registryFetchIntervalSeconds: 1
 management:
   zipkin:

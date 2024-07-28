@@ -1,6 +1,5 @@
-package com.ilyap.taskservice.client;
+package com.ilyap.authservice.client;
 
-import com.ilyap.taskservice.model.dto.UserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,5 +8,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface UserServiceClient {
 
     @GetMapping("/{username:\\w+}")
-    UserResponse findByUsername(@PathVariable String username);
+    void findByUsername(@PathVariable String username);
 }

@@ -2,6 +2,7 @@ package com.ilyap.userservice.model.dto;
 
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -9,7 +10,9 @@ public class UserReadDto {
 
     private long id;
     private String username;
+    private String firstname;
+    private String lastname;
+    private LocalDate birthdate;
     private String biography;
-    private String role;
     private List<Long> tasksIds;
 }
