@@ -1,6 +1,7 @@
 package com.ilyap.apigateway.filter;
 
 import com.ilyap.apigateway.dto.AuthorizationResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -16,16 +17,17 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Component
+@RequiredArgsConstructor
 public class GlobalRedirectFilter implements GlobalFilter {
 
     @Value("${auth-service.uri}")
     private String authServiceUri;
 
+    private final WebClient webClient;
+
     @Override
     @Order(-1)
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        WebClient webClient = WebClient.create();
-
         Mono<AuthorizationResponse> responseMono = webClient.get()
                 .uri(authServiceUri + "/api/v1/login")
                 .retrieve()
