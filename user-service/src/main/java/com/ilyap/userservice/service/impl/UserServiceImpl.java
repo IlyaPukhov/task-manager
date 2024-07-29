@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserReadDto registerUser(UserCreateUpdateDto userCreateUpdateDto) {
+    public UserReadDto createUser(UserCreateUpdateDto userCreateUpdateDto) {
         String username = userCreateUpdateDto.username();
         userRepository.findByUsername(username)
                 .ifPresent(user -> {
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
                 .map(userCreateUpdateMapper::map)
                 .map(userRepository::save)
                 .map(userReadMapper::map)
-                .orElseThrow(() -> new RuntimeException("User could not be registered"));
+                .orElseThrow(() -> new RuntimeException("User could not be created"));
     }
 
     @PreAuthorize("#userCreateUpdateDto.username == principal.username")

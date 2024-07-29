@@ -31,13 +31,13 @@ public class UsersController {
         return PageResponse.of(page);
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid UserCreateUpdateDto userCreateUpdateDto,
+    @PostMapping("/registration")
+    public ResponseEntity<?> register(@Valid UserCreateUpdateDto userCreateUpdateDto,
                                     BindingResult bindingResult) throws BindException {
         if (bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
         }
-        UserReadDto userReadDto = userService.registerUser(userCreateUpdateDto);
+        UserReadDto userReadDto = userService.createUser(userCreateUpdateDto);
         return ResponseEntity.created(
                         ServletUriComponentsBuilder
                                 .fromCurrentRequestUri()

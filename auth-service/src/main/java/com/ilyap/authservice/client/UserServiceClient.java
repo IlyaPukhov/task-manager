@@ -1,12 +1,13 @@
 package com.ilyap.authservice.client;
 
+import com.ilyap.authservice.dto.RegistrationRequest;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
 
 @FeignClient(name = "user-service", path = "/api/v1/users")
 public interface UserServiceClient {
 
-    @GetMapping("/{username:\\w+}")
-    void findByUsername(@PathVariable String username);
+    @PostMapping("/registration")
+    ResponseEntity<?> register(RegistrationRequest registrationRequest);
 }
