@@ -27,7 +27,7 @@ public class GlobalRedirectFilter implements GlobalFilter {
         WebClient webClient = WebClient.create();
 
         Mono<AuthorizationResponse> responseMono = webClient.get()
-                .uri(authServiceUri + "/login")
+                .uri(authServiceUri + "/api/v1/login")
                 .retrieve()
                 .bodyToMono(AuthorizationResponse.class);
 
