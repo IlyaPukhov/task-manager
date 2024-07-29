@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,13 +26,6 @@ public class TasksController {
 
     private final TaskService taskService;
 
-    @GetMapping
-    public PageResponse<TaskReadDto> findAll(Pageable pageable,
-                                             @AuthenticationPrincipal UserDetails userDetails) {
-        Page<TaskReadDto> page = taskService.findAll(userDetails, pageable);
-        return PageResponse.of(page);
-    }
-
     @PostMapping("/create")
     public ResponseEntity<?> create(@Valid TaskCreateUpdateDto taskCreateUpdateDto,
                                     BindingResult bindingResult) throws BindException {
@@ -51,16 +42,16 @@ public class TasksController {
                 .body(taskReadDto);
     }
 
-    @GetMapping("/user/{ownerId:\\d+}")
+    @GetMapping("/user/{ownerUsername}")
     public PageResponse<TaskReadDto> findAllByUser(Pageable pageable,
-                                                   @PathVariable Long ownerId) {
-        Page<TaskReadDto> page = taskService.findAllByUserId(ownerId, pageable);
+                                                   @PathVariable String ownerUsername) {
+        Page<TaskReadDto> page = taskService.findAllByUsername(ownerUsername, pageable);
         return PageResponse.of(page);
     }
 
-    @DeleteMapping("/user/{ownerId:\\d+}")
-    public ResponseEntity<Void> deleteAllByUser(@PathVariable Long ownerId) {
-        taskService.deleteAllByUserId(ownerId);
+    @DeleteMapping("/user/{ownerUsername}")
+    public ResponseEntity<Void> deleteAllByUser(@PathVariable String ownerUsername) {
+        taskService.deleteAllByUsername(ownerUsername);
         return ResponseEntity.noContent()
                 .build();
     }

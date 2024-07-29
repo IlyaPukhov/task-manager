@@ -2,7 +2,7 @@
 
 --changeset ilyap:1
 ALTER TABLE task
-    ADD COLUMN owner_id BIGINT;
+    ADD COLUMN owner_username VARCHAR(64);
 
 --changeset ilyap:2
 ALTER TABLE task

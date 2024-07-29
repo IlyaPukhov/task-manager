@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,16 +35,9 @@ public class TaskServiceImpl implements TaskService {
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
-    @PreAuthorize("isAuthenticated()")
     @Override
-    public Page<TaskReadDto> findAll(UserDetails userDetails, Pageable pageable) {
-        return taskRepository.findAll(pageable)
-                .map(taskReadMapper::map);
-    }
-
-    @Override
-    public Page<TaskReadDto> findAllByUserId(Long userId, Pageable pageable) {
-        return taskRepository.findAllByOwnerId(userId, pageable)
+    public Page<TaskReadDto> findAllByUsername(String username, Pageable pageable) {
+        return taskRepository.findAllByOwnerUsername(username, pageable)
                 .map(taskReadMapper::map);
     }
 
@@ -78,10 +70,10 @@ public class TaskServiceImpl implements TaskService {
         taskRepository.deleteById(id);
     }
 
-    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#userId, principal.username)")
+    @PreAuthorize("principal.username == #username")
     @Transactional
     @Override
-    public void deleteAllByUserId(Long userId) {
-        taskRepository.deleteAllByOwnerId(userId);
+    public void deleteAllByUsername(String username) {
+        taskRepository.deleteAllByOwnerUsername(username);
     }
 }

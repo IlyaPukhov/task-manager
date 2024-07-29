@@ -5,5 +5,5 @@ public record TaskResponse(long id,
                            String description,
                            String status,
                            String priority,
-                           Long ownerId) {
+                           String ownerUsername) {
 }

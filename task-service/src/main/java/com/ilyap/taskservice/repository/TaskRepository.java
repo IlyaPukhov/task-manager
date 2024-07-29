@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    Page<Task> findAllByOwnerId(Long ownerId, Pageable pageable);
+    Page<Task> findAllByOwnerUsername(String ownerUsername, Pageable pageable);
 
-    void deleteAllByOwnerId(Long ownerId);
+    void deleteAllByOwnerUsername(String ownerUsername);
 }

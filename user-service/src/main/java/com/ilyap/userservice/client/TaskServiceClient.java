@@ -12,6 +12,6 @@ public interface TaskServiceClient {
     @GetMapping("/{taskId:\\d+}")
     TaskResponse findTaskByTaskId(@PathVariable Long taskId);
 
-    @GetMapping("/user/{ownerId:\\d+}")
-    PageResponse<TaskResponse> findAllTasks(@PathVariable Long ownerId);
+    @GetMapping("/user/{ownerUsername}")
+    PageResponse<TaskResponse> findAllTasks(@PathVariable String ownerUsername);
 }

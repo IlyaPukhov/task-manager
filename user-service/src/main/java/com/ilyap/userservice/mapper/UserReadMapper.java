@@ -24,9 +24,9 @@ public abstract class UserReadMapper {
 
     @AfterMapping
     protected void addTasksIds(TaskManagerUser user, @MappingTarget UserReadDto userReadDto) {
-        List<Long> allTasksIds = taskServiceClient.findAllTasks(user.getId())
+        List<Long> allTasksIds = taskServiceClient.findAllTasks(user.getUsername())
                 .content().stream()
-                .map(TaskResponse::ownerId)
+                .map(TaskResponse::id)
                 .toList();
 
         userReadDto.setTasksIds(allTasksIds);

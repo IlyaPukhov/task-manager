@@ -39,7 +39,7 @@ public class Task extends AuditingEntity {
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
-    private Long ownerId;
+    private String ownerUsername;
 
     @Override
     public final boolean equals(Object o) {

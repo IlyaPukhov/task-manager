@@ -11,6 +11,7 @@ import jakarta.validation.constraints.Size;
 public record TaskCreateUpdateDto(@NotBlank @NotEmpty @Size(min = 1, max = 64) String title,
                                   @NotBlank @NotEmpty @Size(min = 1, max = 256) String description,
                                   @ValueOfEnum(Status.class) @NotNull String status,
-                                  @ValueOfEnum(Priority.class) @NotNull String priority, Long ownerId) {
+                                  @ValueOfEnum(Priority.class) @NotNull String priority,
+                                  @NotBlank @NotEmpty String ownerUsername) {
 
 }

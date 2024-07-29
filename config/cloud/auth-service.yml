@@ -1,3 +1,17 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://host.docker.internal:18080/realms/task-manager
+keycloak:
+  server-url: http://host.docker.internal:18080
+  realm: task-manager
+  client-id: ${KEYCLOAK_CLIENT_ID}
+  client-secret: ${KEYCLOAK_CLIENT_SECRET}
+logging:
+  level:
+    org.springframework.security: TRACE
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 1
@@ -5,7 +19,7 @@ eureka:
     prefer-ip-address: true
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://host.docker.internal:8761/eureka/
     registryFetchIntervalSeconds: 1
 management:
   zipkin:
@@ -14,3 +28,9 @@ management:
   tracing:
     sampling:
       probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
