@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.1</version>
+        <version>3.3.2</version>
         <relativePath />
     </parent>
 
@@ -16,9 +16,9 @@
         <module>eureka-server</module>
         <module>auth-service</module>
         <module>productivity-service</module>
-        <module>storage-service</module>
         <module>task-service</module>
         <module>user-service</module>
+        <module>mail-service</module>
     </modules>
 
     <groupId>com.ilyap</groupId>
