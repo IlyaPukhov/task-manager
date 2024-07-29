@@ -19,25 +19,9 @@ import java.util.stream.Stream;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    private static final String[] WHITE_LIST_URL = {
-            "/api/v1/auth/**",
-            "/v3/api-docs",
-            "/v3/api-docs/**",
-            "/swagger/resources",
-            "/swagger/resources/**",
-            "/swagger-ui/**",
-            "/webjars/**",
-            "/swagger-ui.html",
-            "/eureka/**"
-    };
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .authorizeHttpRequests(request -> request
-                        .requestMatchers(WHITE_LIST_URL).permitAll()
-                        .anyRequest().authenticated()
-                )
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults()))

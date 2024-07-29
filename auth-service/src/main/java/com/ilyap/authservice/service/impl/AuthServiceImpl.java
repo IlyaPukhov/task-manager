@@ -30,8 +30,9 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public AuthorizationResponse authorize(UserDetails userDetails) {
         var authorities = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
+                .map(GrantedAuthority.class::cast)
                 .toList();
+
         return new AuthorizationResponse(true, userDetails.getUsername(), authorities);
     }
 
