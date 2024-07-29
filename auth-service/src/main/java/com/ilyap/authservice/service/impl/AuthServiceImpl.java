@@ -49,6 +49,7 @@ public class AuthServiceImpl implements AuthService {
             passwordCred.setValue(registrationDto.password());
             UserResource userResource = realmResource.users().get(userId);
             userResource.resetPassword(passwordCred);
+            userResource.sendVerifyEmail();
 
             return createUser(registrationDto);
         }

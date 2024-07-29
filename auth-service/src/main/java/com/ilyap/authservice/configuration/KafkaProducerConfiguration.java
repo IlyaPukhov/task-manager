@@ -1,5 +1,6 @@
 package com.ilyap.authservice.configuration;
 
+import com.ilyap.authservice.dto.VerificationEmailMessage;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,8 +18,8 @@ import java.util.Map;
 public class KafkaProducerConfiguration {
 
     @Bean
-    public ProducerFactory<String, Object> producerFactory(@Value("${spring.kafka.bootstrap-servers}")
-                                                           String bootstrapServers) {
+    public ProducerFactory<String, VerificationEmailMessage> producerFactory(@Value("${spring.kafka.bootstrap-servers}")
+                                                                             String bootstrapServers) {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.ACKS_CONFIG, "all");
@@ -30,8 +31,8 @@ public class KafkaProducerConfiguration {
     }
 
     @Bean
-    public KafkaTemplate<String, Object> kafkaTemplate(ProducerFactory<String, Object> producerFactory) {
-        KafkaTemplate<String, Object> kafkaTemplate = new KafkaTemplate<>(producerFactory);
+    public KafkaTemplate<String, VerificationEmailMessage> kafkaTemplate(ProducerFactory<String, VerificationEmailMessage> producerFactory) {
+        KafkaTemplate<String, VerificationEmailMessage> kafkaTemplate = new KafkaTemplate<>(producerFactory);
         kafkaTemplate.setObservationEnabled(true);
         return kafkaTemplate;
     }

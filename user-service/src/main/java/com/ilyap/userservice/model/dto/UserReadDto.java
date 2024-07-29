@@ -14,7 +14,6 @@ public class UserReadDto {
     private String lastname;
     private LocalDate birthdate;
     private String email;
-    private String status;
     private String biography;
     private List<Long> tasksIds;
 }

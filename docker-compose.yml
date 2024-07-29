@@ -60,11 +60,12 @@ services:
   keycloak:
     container_name: keycloak
     image: quay.io/keycloak/keycloak:25.0.2
-    command: start-dev --import-realm
+    command: start-dev --import-realm --config-file=/opt/keycloak/conf/keycloak-server.json
     ports:
       - '18080:8080'
     volumes:
-      - keycloak-config:/opt/keycloak/data/import
+      - keycloak-config:/opt/keycloak
+      - ./auth-service/target/auth-service-0.0.1-SNAPSHOT.jar:/opt/keycloak/providers/keycloak-event-listener.jar
     env_file:
       - ./.env
 
@@ -116,7 +117,7 @@ volumes:
     driver_opts:
       o: bind
       type: none
-      device: ./config/keycloak/import
+      device: ./config/keycloak
 
   victoria-metrics-config:
     driver: local

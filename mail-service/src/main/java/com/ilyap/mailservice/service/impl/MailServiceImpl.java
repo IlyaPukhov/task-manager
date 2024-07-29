@@ -1,7 +1,7 @@
 package com.ilyap.mailservice.service.impl;
 
 import com.ilyap.logging.annotation.Logged;
-import com.ilyap.mailservice.dto.EmailMessage;
+import com.ilyap.mailservice.dto.VerificationEmailMessage;
 import com.ilyap.mailservice.service.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -28,7 +28,7 @@ public class MailServiceImpl implements MailService {
 
     @Override
     @SneakyThrows
-    public void sendMessage(EmailMessage emailMessage) {
+    public void sendMessage(VerificationEmailMessage emailMessage) {
         var message = emailSender.createMimeMessage();
 
         var helper = new MimeMessageHelper(
@@ -37,8 +37,7 @@ public class MailServiceImpl implements MailService {
                 UTF_8.name());
 
         Context context = new Context();
-        context.setVariable("verificationCode", emailMessage.message());
-        // TODO context.setVariable("verificationUrl", emailMessage.message());
+        context.setVariable("verificationUrl", emailMessage.verificationUrl());
         String emailContent = templateEngine.process("verify-email", context);
 
         helper.setTo(emailMessage.email());

@@ -1,6 +1,6 @@
 package com.ilyap.mailservice.configuration;
 
-import com.ilyap.mailservice.dto.EmailMessage;
+import com.ilyap.mailservice.dto.VerificationEmailMessage;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +24,7 @@ public class KafkaConsumerConfiguration {
     private String bootstrapServers;
 
     @Bean
-    public ConsumerFactory<String, EmailMessage> consumerFactory() {
+    public ConsumerFactory<String, VerificationEmailMessage> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
@@ -37,10 +37,10 @@ public class KafkaConsumerConfiguration {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, EmailMessage> kafkaListenerContainerFactory(
-            ConsumerFactory<String, EmailMessage> consumerFactory
+    public ConcurrentKafkaListenerContainerFactory<String, VerificationEmailMessage> kafkaListenerContainerFactory(
+            ConsumerFactory<String, VerificationEmailMessage> consumerFactory
     ) {
-        ConcurrentKafkaListenerContainerFactory<String, EmailMessage> factory
+        ConcurrentKafkaListenerContainerFactory<String, VerificationEmailMessage> factory
                 = new ConcurrentKafkaListenerContainerFactory<>();
         factory.getContainerProperties().setObservationEnabled(true);
         factory.getContainerProperties().setAckMode(AckMode.MANUAL_IMMEDIATE);

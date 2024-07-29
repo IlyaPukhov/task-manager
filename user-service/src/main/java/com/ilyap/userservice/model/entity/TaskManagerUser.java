@@ -1,8 +1,6 @@
 package com.ilyap.userservice.model.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,9 +39,6 @@ public class TaskManagerUser extends AuditingEntity {
     private LocalDate birthdate;
 
     private String email;
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
 
     private String biography;
 

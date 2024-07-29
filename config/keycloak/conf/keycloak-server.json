@@ -1,0 +1,14 @@
+{
+  "providers": {
+    "eventsListener": {
+      "keycloak-event-listener": {
+        "enabled": true
+      }
+    }
+  },
+  "properties": {
+    "keycloak-event-listener": {
+      "jar": "/opt/keycloak/providers/keycloak-event-listener.jar"
+    }
+  }
+}
