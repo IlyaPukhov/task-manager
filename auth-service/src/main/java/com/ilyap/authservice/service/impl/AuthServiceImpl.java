@@ -5,6 +5,7 @@ import com.ilyap.authservice.dto.AuthorizationResponse;
 import com.ilyap.authservice.dto.RegistrationDto;
 import com.ilyap.authservice.mapper.RegistrationMapper;
 import com.ilyap.authservice.service.AuthService;
+import com.ilyap.logging.annotation.Logged;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.CreatedResponseUtil;
@@ -18,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 @Service
+@Logged
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 

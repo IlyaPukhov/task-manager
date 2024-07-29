@@ -1,17 +1,17 @@
-name: 'Storage Service CI'
+name: 'Mail Service CI'
 
 on:
   push:
     branches:
       - master
     paths:
-      - 'storage-service/**'
+      - 'mail-service/**'
 jobs:
-  storage-service:
+  mail-service:
     env:
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
       DOCKER_PASSWORD: ${{secrets.DOCKER_ACCESS_TOKEN}}
-      PATH: storage-service
+      PATH: mail-service
     runs-on: ubuntu-latest
     steps:
       - name: checkout repository
