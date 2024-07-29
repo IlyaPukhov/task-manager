@@ -1,8 +1,8 @@
 package com.ilyap.mailservice.service;
 
-import com.ilyap.mailservice.dto.EmailMessage;
+import com.ilyap.mailservice.dto.VerificationEmailMessage;
 
 public interface MailService {
 
-    void sendMessage(EmailMessage emailMessage);
+    void sendMessage(VerificationEmailMessage emailMessage);
 }
