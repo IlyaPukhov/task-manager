@@ -1,4 +1,4 @@
-package com.ilyap.authservice.dto;
+package com.ilyap.apigateway.dto;
 
 import org.springframework.security.core.GrantedAuthority;
 
