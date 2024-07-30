@@ -33,6 +33,21 @@ services:
     env_file:
       - ./.env
 
+  db-productivity:
+    container_name: db-productivity-service
+    image: mongo:8
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${PRODUCTIVITY_SERVICE_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${PRODUCTIVITY_SERVICE_PASSWORD}
+    healthcheck:
+      test: [ "CMD-SHELL", "mongosh", "--eval", "db.adminCommand('ping')" ]
+    ports:
+      - '27017:27017'
+    volumes:
+      - db-productivity-service-data:/var/lib/postgresql/data
+    env_file:
+      - ./.env
+
   zookeeper:
     container_name: zookeeper
     image: confluentinc/cp-zookeeper:7.6.1
@@ -111,6 +126,7 @@ networks:
 volumes:
   db-user-service-data:
   db-task-service-data:
+  db-productivity-service-data:
   grafana-data:
   keycloak-config:
     driver: local
