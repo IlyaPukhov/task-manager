@@ -1,15 +1,17 @@
 name: 'task-manager'
 
 services:
+  # инфраструктура
   db-user:
     container_name: db-user-service
     image: postgres:16
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${USER_SERVICE_DB}
       POSTGRES_USER: ${USER_SERVICE_USER}
       POSTGRES_PASSWORD: ${USER_SERVICE_PASSWORD}
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready", "-U", $$POSTGRES_USER, "-d", $$POSTGRES_DB ]
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
     ports:
       - '5433:5432'
     volumes:
@@ -20,12 +22,13 @@ services:
   db-task:
     container_name: db-task-service
     image: postgres:16
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${TASK_SERVICE_DB}
       POSTGRES_USER: ${TASK_SERVICE_USER}
       POSTGRES_PASSWORD: ${TASK_SERVICE_PASSWORD}
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready", "-U", $$POSTGRES_USER, "-d", $$POSTGRES_DB ]
+      test: pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB
     ports:
       - '5434:5432'
     volumes:
@@ -36,11 +39,12 @@ services:
   db-productivity:
     container_name: db-productivity-service
     image: mongo:8
+    restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${PRODUCTIVITY_SERVICE_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${PRODUCTIVITY_SERVICE_PASSWORD}
     healthcheck:
-      test: [ "CMD-SHELL", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      test: mongosh --eval db.adminCommand('ping')
     ports:
       - '27017:27017'
     volumes:
@@ -51,6 +55,7 @@ services:
   zookeeper:
     container_name: zookeeper
     image: confluentinc/cp-zookeeper:7.6.1
+    restart: unless-stopped
     ports:
       - '2181:2181'
     environment:
@@ -60,6 +65,7 @@ services:
   kafka:
     container_name: kafka
     image: confluentinc/cp-kafka:7.6.1
+    restart: unless-stopped
     depends_on:
       - zookeeper
     ports:
@@ -76,6 +82,7 @@ services:
     container_name: keycloak
     image: quay.io/keycloak/keycloak:25.0.2
     command: start-dev --import-realm --config-file=/opt/keycloak/conf/keycloak-server.json
+    restart: unless-stopped
     ports:
       - '18080:8080'
     volumes:
@@ -88,6 +95,7 @@ services:
     container_name: victoria-metrics
     image: victoriametrics/victoria-metrics:v1.101.0
     command: -promscrape.config=/etc/victoria-metrics/promscrape.yml
+    restart: unless-stopped
     ports:
       - '8428:8428'
     volumes:
@@ -96,6 +104,7 @@ services:
   grafana:
     container_name: grafana
     image: grafana/grafana:11.1.0
+    restart: unless-stopped
     ports:
       - '3000:3000'
     volumes:
@@ -106,6 +115,7 @@ services:
   grafana-loki:
     container_name: grafana-loki
     image: grafana/loki:3.0.0
+    restart: unless-stopped
     ports:
       - '3100:3100'
 
@@ -113,6 +123,7 @@ services:
     container_name: grafana-tempo
     image: grafana/tempo:2.5.0
     command: -config.file=/etc/grafana-tempo/tempo.yml
+    restart: unless-stopped
     ports:
       - '3200:3200'
       - '9411:9411' # zipkin
@@ -121,6 +132,7 @@ services:
 
 networks:
   task-manager:
+    name: 'task-manager'
     driver: bridge
 
 volumes:

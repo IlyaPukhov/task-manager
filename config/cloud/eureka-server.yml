@@ -1,15 +1,21 @@
 server:
   port: 8761
-management:
-  zipkin:
-    tracing:
-      endpoint: http://host.docker.internal:9411/api/v2/spans
-  tracing:
-    sampling:
-      probability: 1.0
 eureka:
   instance:
     hostname: localhost
   client:
     register-with-eureka: false
     fetch-registry: false
+management:
+  zipkin:
+    tracing:
+      endpoint: http://${ZIPKIN_HOST:localhost:9411}/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
