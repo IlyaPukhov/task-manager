@@ -3,8 +3,10 @@ package com.ilyap.authservice.service.impl;
 import com.ilyap.authservice.client.UserServiceClient;
 import com.ilyap.authservice.dto.AuthorizationResponse;
 import com.ilyap.authservice.dto.RegistrationDto;
+import com.ilyap.authservice.dto.VerificationEmailMessage;
 import com.ilyap.authservice.mapper.RegistrationMapper;
 import com.ilyap.authservice.service.AuthService;
+import com.ilyap.authservice.service.producer.EmailSendingProducer;
 import com.ilyap.logging.annotation.Logged;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class AuthServiceImpl implements AuthService {
     private final RealmResource realmResource;
     private final RegistrationMapper registrationMapper;
     private final UserServiceClient userServiceClient;
+    private final EmailSendingProducer emailProducer;
 
     @Override
     public AuthorizationResponse authorize(UserDetails userDetails) {
@@ -59,6 +62,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private ResponseEntity<?> createUser(RegistrationDto registrationDto) {
+        emailProducer.sendEmail(new VerificationEmailMessage("You are welcome!", "https://google.com"));
         return userServiceClient.register(registrationMapper.toRequest(registrationDto));
     }
 }
