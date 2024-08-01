@@ -4,13 +4,13 @@ import com.ilyap.userservice.model.dto.PageResponse;
 import com.ilyap.userservice.model.dto.UserCreateUpdateDto;
 import com.ilyap.userservice.model.dto.UserReadDto;
 import com.ilyap.userservice.service.UserService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,8 +32,8 @@ public class UsersController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<?> register(@Valid UserCreateUpdateDto userCreateUpdateDto,
-                                    BindingResult bindingResult) throws BindException {
+    public ResponseEntity<?> register(@Validated UserCreateUpdateDto userCreateUpdateDto,
+                                      BindingResult bindingResult) throws BindException {
         if (bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
         }

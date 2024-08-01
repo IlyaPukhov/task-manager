@@ -6,9 +6,10 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.util.ProxyUtils;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,11 +17,11 @@ import java.util.Objects;
 public class Productivity extends AuditingEntity {
 
     @Id
-    private String id;
+    private UUID id;
 
-    private String userId;
+    private String username;
 
-    private Instant date;
+    private LocalDate date;
 
     private Integer mood;
 

@@ -4,13 +4,14 @@ import com.ilyap.taskservice.model.dto.PageResponse;
 import com.ilyap.taskservice.model.dto.TaskCreateUpdateDto;
 import com.ilyap.taskservice.model.dto.TaskReadDto;
 import com.ilyap.taskservice.service.TaskService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +28,7 @@ public class TasksController {
     private final TaskService taskService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> create(@Valid TaskCreateUpdateDto taskCreateUpdateDto,
+    public ResponseEntity<?> create(@Validated TaskCreateUpdateDto taskCreateUpdateDto,
                                     BindingResult bindingResult) throws BindException {
         if (bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
@@ -49,6 +50,7 @@ public class TasksController {
         return PageResponse.of(page);
     }
 
+    @PreAuthorize("#ownerUsername == principal.username")
     @DeleteMapping("/user/{ownerUsername}")
     public ResponseEntity<Void> deleteAllByUser(@PathVariable String ownerUsername) {
         taskService.deleteAllByUsername(ownerUsername);
