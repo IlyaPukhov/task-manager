@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.DefaultClientRequestObse
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class ClientConfiguration {
+public class WebClientConfiguration {
 
     @Bean
     @Primary

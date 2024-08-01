@@ -14,7 +14,6 @@ import com.ilyap.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,21 +33,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserReadDto> findAll(Pageable pageable) {
         return userRepository.findAll(pageable)
-                .map(userReadMapper::map);
+                .map(userReadMapper::toDto);
     }
 
     @Override
     public UserReadDto findOwnerByTaskId(Long taskId) {
         TaskResponse task = taskServiceClient.findTaskByTaskId(taskId);
         return userRepository.findByUsername(task.ownerUsername())
-                .map(userReadMapper::map)
+                .map(userReadMapper::toDto)
                 .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     public UserReadDto findByUsername(String username) {
         return userRepository.findByUsername(username)
-                .map(userReadMapper::map)
+                .map(userReadMapper::toDto)
                 .orElseThrow(() -> new UserNotFoundException("User %s not found".formatted(username)));
     }
 
@@ -62,25 +61,23 @@ public class UserServiceImpl implements UserService {
                 });
 
         return Optional.of(userCreateUpdateDto)
-                .map(userCreateUpdateMapper::map)
+                .map(userCreateUpdateMapper::toEntity)
                 .map(userRepository::save)
-                .map(userReadMapper::map)
+                .map(userReadMapper::toDto)
                 .orElseThrow(() -> new RuntimeException("User could not be created"));
     }
 
-    @PreAuthorize("#userCreateUpdateDto.username == principal.username")
     @Transactional
     @Override
     public UserReadDto update(UserCreateUpdateDto userCreateUpdateDto) {
         String username = userCreateUpdateDto.username();
         return userRepository.findByUsername(username)
-                .map(user -> userCreateUpdateMapper.map(userCreateUpdateDto, user))
+                .map(user -> userCreateUpdateMapper.toEntity(userCreateUpdateDto, user))
                 .map(userRepository::save)
-                .map(userReadMapper::map)
+                .map(userReadMapper::toDto)
                 .orElseThrow(() -> new UserNotFoundException("User %s not found".formatted(username)));
     }
 
-    @PreAuthorize("#username == principal.username")
     @Transactional
     @Override
     public void delete(String username) {

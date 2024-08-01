@@ -11,7 +11,6 @@ import com.ilyap.taskservice.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,50 +26,45 @@ public class TaskServiceImpl implements TaskService {
     private final TaskCreateUpdateMapper taskCreateUpdateMapper;
     private final TaskRepository taskRepository;
 
-    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#id, principal.username)")
     @Override
     public TaskReadDto findTaskById(Long id) {
         return taskRepository.findById(id)
-                .map(taskReadMapper::map)
+                .map(taskReadMapper::toDto)
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
     @Override
     public Page<TaskReadDto> findAllByUsername(String username, Pageable pageable) {
         return taskRepository.findAllByOwnerUsername(username, pageable)
-                .map(taskReadMapper::map);
+                .map(taskReadMapper::toDto);
     }
 
-    @PreAuthorize("hasRole('USER')")
     @Transactional
     @Override
     public TaskReadDto create(TaskCreateUpdateDto taskCreateUpdateDto) {
         return Optional.of(taskCreateUpdateDto)
-                .map(taskCreateUpdateMapper::map)
+                .map(taskCreateUpdateMapper::toEntity)
                 .map(taskRepository::save)
-                .map(taskReadMapper::map)
+                .map(taskReadMapper::toDto)
                 .orElseThrow(() -> new RuntimeException("Task could not be created"));
     }
 
-    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#id, principal.username)")
     @Transactional
     @Override
     public TaskReadDto update(Long id, TaskCreateUpdateDto taskCreateUpdateDto) {
         return taskRepository.findById(id)
-                .map(task -> taskCreateUpdateMapper.map(taskCreateUpdateDto, task))
+                .map(task -> taskCreateUpdateMapper.toEntity(taskCreateUpdateDto, task))
                 .map(taskRepository::save)
-                .map(taskReadMapper::map)
+                .map(taskReadMapper::toDto)
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
-    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#id, principal.username)")
     @Transactional
     @Override
     public void delete(Long id) {
         taskRepository.deleteById(id);
     }
 
-    @PreAuthorize("principal.username == #username")
     @Transactional
     @Override
     public void deleteAllByUsername(String username) {

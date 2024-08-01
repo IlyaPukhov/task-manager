@@ -20,7 +20,9 @@ public abstract class UserReadMapper {
     @Autowired
     private TaskServiceClient taskServiceClient;
 
-    public abstract UserReadDto map(TaskManagerUser user);
+    public abstract TaskManagerUser toEntity(UserReadDto userReadDto);
+
+    public abstract UserReadDto toDto(TaskManagerUser user);
 
     @AfterMapping
     protected void addTasksIds(TaskManagerUser user, @MappingTarget UserReadDto userReadDto) {
