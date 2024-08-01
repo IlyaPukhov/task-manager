@@ -24,7 +24,7 @@ spring:
           predicates:
             - Host=/api/v1/productivity/**
 auth-service:
-  uri: http://host.docker.internal:8084
+  uri: http://${AUTH_SERVICE_HOST:localhost:8084}
 logging:
   level:
     root: INFO
@@ -41,15 +41,21 @@ eureka:
       defaultZone: http://${EUREKA_SERVER_HOST:localhost:8761}/eureka/
     registryFetchIntervalSeconds: 1
 management:
-  zipkin:
-    tracing:
-      endpoint: http://${ZIPKIN_HOST:localhost:9411}/api/v2/spans
-  tracing:
-    sampling:
-      probability: 1.0
   endpoints:
     web:
       exposure:
         include:
           - health
           - prometheus
+  zipkin:
+    tracing:
+      endpoint: http://${ZIPKIN_HOST:localhost:9411}/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true

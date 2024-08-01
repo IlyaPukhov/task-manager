@@ -5,4 +5,4 @@ spring:
     import: 'configserver:'
   cloud:
     config:
-      uri: http://config:config-password@host.docker.internal:8888
+      uri: http://config:config-password@${CONFIG_SERVER_HOST:localhost:8888}

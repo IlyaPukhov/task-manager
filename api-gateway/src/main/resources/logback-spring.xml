@@ -9,11 +9,11 @@
             <appender name="LOKI"
                       class="com.github.loki4j.logback.Loki4jAppender">
                 <http>
-                    <url>${LOKI_URL}/loki/api/v1/push</url>
+                    <url>http://${LOKI_URL}/loki/api/v1/push</url>
                 </http>
                 <format class="">
                     <label>
-                        <pattern>app=api-gateway,host=${HOSTNAME},level=%level</pattern>
+                        <pattern>service_name=api-gateway,host=${HOSTNAME},traceID=%X{traceId:-NONE},level=%level</pattern>
                     </label>
                     <message>
                         <pattern>l=%level h=${HOSTNAME} c=%logger{20} t=%thread | %msg %ex</pattern>

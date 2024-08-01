@@ -1,7 +1,20 @@
-FROM openjdk:21
+FROM maven:3.9.6-alpine AS builder
+WORKDIR /application
+COPY . .
+RUN --mount=type=cache,target=/root/.m2  mvn clean install -Dmaven.test.skip
 
-ARG JAR_FILE=target/*.jar
+FROM bellsoft/liberica-openjre-alpine:21 AS layers
+WORKDIR /application
+COPY --from=builder /application/target/*.jar app.jar
+RUN java -Djarmode=layertools -jar app.jar extract
 
-COPY ${JAR_FILE} app.jar
+FROM bellsoft/liberica-openjre-alpine:21
+VOLUME /tmp
+RUN adduser -S spring-user
+USER spring-user
+COPY --from=layers /application/dependencies/ ./
+COPY --from=layers /application/spring-boot-loader/ ./
+COPY --from=layers /application/snapshot-dependencies/ ./
+COPY --from=layers /application/application/ ./
 
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]

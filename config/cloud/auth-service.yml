@@ -7,9 +7,9 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://host.docker.internal:18080/realms/task-manager
+          issuer-uri: http://${KEYCLOAK_HOST:localhost:18080}/realms/task-manager
 keycloak:
-  server-url: http://host.docker.internal:18080
+  server-url: http://${KEYCLOAK_HOST:localhost:18080}
   realm: task-manager
   client-id: ${KEYCLOAK_CLIENT_ID}
   client-secret: ${KEYCLOAK_CLIENT_SECRET}
@@ -27,15 +27,21 @@ eureka:
       defaultZone: http://${EUREKA_SERVER_HOST:localhost:8761}/eureka/
     registryFetchIntervalSeconds: 1
 management:
-  zipkin:
-    tracing:
-      endpoint: http://${ZIPKIN_HOST:localhost:9411}/api/v2/spans
-  tracing:
-    sampling:
-      probability: 1.0
   endpoints:
     web:
       exposure:
         include:
           - health
           - prometheus
+  zipkin:
+    tracing:
+      endpoint: http://${ZIPKIN_HOST:localhost:9411}/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
