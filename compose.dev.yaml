@@ -1,0 +1,73 @@
+name: 'task-manager_dev'
+
+services:
+  db-user-service:
+    extends:
+      service: db-user
+      file: infrastructure.yaml
+    ports:
+      - '5433:5432'
+    env_file:
+      - ./.env.dev
+
+  db-task:
+    extends:
+      service: db-task
+      file: infrastructure.yaml
+    ports:
+      - '5434:5432'
+    env_file:
+      - ./.env.dev
+
+  db-productivity-service:
+    extends:
+      service: db-productivity
+      file: infrastructure.yaml
+    ports:
+      - '27017:27017'
+    env_file:
+      - ./.env.dev
+
+  kafka:
+    extends:
+      service: kafka
+      file: infrastructure.yaml
+    ports:
+      - '9092:9092'
+
+  keycloak:
+    extends:
+      service: keycloak
+      file: infrastructure.yaml
+    ports:
+      - '18080:8080'
+    env_file:
+      - ./.env.dev
+
+  victoria-metrics:
+    extends:
+      service: victoria-metrics
+      file: infrastructure.yaml
+    ports:
+      - '8428:8428'
+
+  grafana:
+    extends:
+      service: grafana
+      file: infrastructure.yaml
+    ports:
+      - '3000:3000'
+    env_file:
+      - ./.env.dev
+
+  grafana-loki:
+    extends:
+      service: grafana-loki
+      file: infrastructure.yaml
+    ports:
+      - '3100:3100'
+
+  grafana-tempo:
+    ports:
+      - '3200:3200'
+      - '9411:9411' # zipkin

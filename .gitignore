@@ -1,6 +1,7 @@
 HELP.md
 target/
-*.env
+*.env*
+!.env*.example
 /volumes
 /data
 !.mvn/wrapper/maven-wrapper.jar
