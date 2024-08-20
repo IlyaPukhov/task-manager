@@ -1,9 +1,19 @@
 name: 'task-manager_dev'
 
+networks:
+  kafka-network:
+    driver: bridge
+  pg-network:
+    driver: bridge
+  mongo-network:
+    driver: bridge
+
 services:
   # monitoring-tools
   kafka-ui:
     image: provectuslabs/kafka-ui:v0.7.2
+    networks:
+      - kafka-network
     ports:
       - '8989:8080'
     environment:
@@ -12,6 +22,8 @@ services:
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
   pgadmin:
     image: dpage/pgadmin4:8.10
+    networks:
+      - pg-network
     ports:
       - '5050:80'
     volumes:
@@ -25,6 +37,8 @@ services:
     entrypoint: /bin/sh -c 'chmod 600 /pgadmin4/pgpass; /entrypoint.sh;'
   mongo-express:
     image: mongo-express:1.0.2
+    networks:
+      - mongo-network
     ports:
       - '8081:8081'
     environment:
@@ -34,6 +48,8 @@ services:
 
   # infrastructure
   db-user-service:
+    networks:
+      - pg-network
     extends:
       service: db-user
       file: infrastructure.yaml
@@ -42,6 +58,8 @@ services:
     env_file:
       - ./.env.dev
   db-task-service:
+    networks:
+      - pg-network
     extends:
       service: db-task
       file: infrastructure.yaml
@@ -50,6 +68,8 @@ services:
     env_file:
       - ./.env.dev
   db-productivity-service:
+    networks:
+      - mongo-network
     extends:
       service: db-productivity
       file: infrastructure.yaml
@@ -58,6 +78,8 @@ services:
     env_file:
       - ./.env.dev
   kafka:
+    networks:
+      - kafka-network
     extends:
       service: kafka
       file: infrastructure.yaml
