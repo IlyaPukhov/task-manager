@@ -14,7 +14,7 @@ spring:
     sender:
       email: no-reply@task-manager.com
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 logging:
   level:
     root: INFO
