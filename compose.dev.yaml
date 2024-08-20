@@ -1,6 +1,38 @@
 name: 'task-manager_dev'
 
 services:
+  # monitoring-tools
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    ports:
+      - '8989:8080'
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_NAME: r93l-jBYSguv4YLse9ytzw
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+  pgadmin:
+    image: dpage/pgadmin4:8.10
+    ports:
+      - '5050:80'
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+      - pgadmin-config:/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    entrypoint: /bin/sh -c 'chmod 600 /pgadmin4/pgpass; /entrypoint.sh;'
+  mongo-express:
+    image: mongo-express:1.0.2
+    ports:
+      - '8081:8081'
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: root
+      ME_CONFIG_BASICAUTH_PASSWORD: root
+      ME_CONFIG_MONGODB_URL: mongodb://a:a@db-productivity-service:27017/
+
+  # infrastructure
   db-user-service:
     extends:
       service: db-user
@@ -9,8 +41,7 @@ services:
       - '5433:5432'
     env_file:
       - ./.env.dev
-
-  db-task:
+  db-task-service:
     extends:
       service: db-task
       file: infrastructure.yaml
@@ -18,7 +49,6 @@ services:
       - '5434:5432'
     env_file:
       - ./.env.dev
-
   db-productivity-service:
     extends:
       service: db-productivity
@@ -27,14 +57,12 @@ services:
       - '27017:27017'
     env_file:
       - ./.env.dev
-
   kafka:
     extends:
       service: kafka
       file: infrastructure.yaml
     ports:
       - '9092:9092'
-
   keycloak:
     extends:
       service: keycloak
@@ -43,14 +71,12 @@ services:
       - '18080:8080'
     env_file:
       - ./.env.dev
-
   victoria-metrics:
     extends:
       service: victoria-metrics
       file: infrastructure.yaml
     ports:
       - '8428:8428'
-
   grafana:
     extends:
       service: grafana
@@ -59,15 +85,22 @@ services:
       - '3000:3000'
     env_file:
       - ./.env.dev
-
   grafana-loki:
     extends:
       service: grafana-loki
       file: infrastructure.yaml
     ports:
       - '3100:3100'
-
   grafana-tempo:
     ports:
       - '3200:3200'
       - '9411:9411' # zipkin
+
+volumes:
+  pgadmin-data:
+  pgadmin-config:
+    driver: local
+    driver_opts:
+      o: bind
+      type: none
+      device: ./config/pgadmin

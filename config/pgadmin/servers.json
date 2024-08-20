@@ -1,0 +1,24 @@
+{
+  "Servers" : {
+    "1" : {
+      "Group" : "Servers",
+      "Name" : "db-user-service",
+      "Host" : "db-user-service",
+      "Port" : 5432,
+      "MaintenanceDB" : "postgres",
+      "Username" : "postgres",
+      "PassFile" : "/pgadmin4/pgpass",
+      "SSLMode" : "prefer"
+    },
+    "2" : {
+      "Group" : "Servers",
+      "Name" : "db-task-service",
+      "Host" : "db-task-service",
+      "Port" : 5432,
+      "MaintenanceDB" : "postgres",
+      "Username" : "postgres",
+      "PassFile" : "/pgadmin4/pgpass",
+      "SSLMode" : "prefer"
+    }
+  }
+}

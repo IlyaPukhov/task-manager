@@ -222,7 +222,6 @@ services:
       file: infrastructure.yaml
     networks:
       - task-manager
-
   grafana:
     extends:
       service: grafana
