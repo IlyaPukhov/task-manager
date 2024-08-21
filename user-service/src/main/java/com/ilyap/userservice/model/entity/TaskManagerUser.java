@@ -13,6 +13,7 @@ import lombok.ToString;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -23,7 +24,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class TaskManagerUser extends AuditingEntity {
+public class TaskManagerUser extends AuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
