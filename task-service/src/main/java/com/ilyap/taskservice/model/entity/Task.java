@@ -14,6 +14,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
@@ -23,7 +24,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "task")
-public class Task extends AuditingEntity {
+public class Task extends AuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
