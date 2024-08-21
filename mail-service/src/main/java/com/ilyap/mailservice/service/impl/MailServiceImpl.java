@@ -34,7 +34,8 @@ public class MailServiceImpl implements MailService {
         var helper = new MimeMessageHelper(
                 message,
                 MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-                UTF_8.name());
+                UTF_8.name()
+        );
 
         Context context = new Context();
         context.setVariable("verificationUrl", emailMessage.verificationUrl());

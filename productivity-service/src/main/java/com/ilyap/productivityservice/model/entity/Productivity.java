@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.util.ProxyUtils;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Document
-public class Productivity extends AuditingEntity {
+public class Productivity extends AuditingEntity implements Serializable {
 
     @Id
     private UUID id;

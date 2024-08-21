@@ -12,6 +12,10 @@ import com.ilyap.userservice.model.dto.UserReadDto;
 import com.ilyap.userservice.repository.UserRepository;
 import com.ilyap.userservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +26,7 @@ import java.util.Optional;
 @Service
 @Logged
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "user-cache")
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
@@ -36,6 +41,7 @@ public class UserServiceImpl implements UserService {
                 .map(userReadMapper::toDto);
     }
 
+    @Cacheable(key = "#taskId")
     @Override
     public UserReadDto findOwnerByTaskId(Long taskId) {
         TaskResponse task = taskServiceClient.findTaskByTaskId(taskId);
@@ -44,6 +50,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(UserNotFoundException::new);
     }
 
+    @Cacheable(key = "#username")
     @Override
     public UserReadDto findByUsername(String username) {
         return userRepository.findByUsername(username)
@@ -51,6 +58,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User %s not found".formatted(username)));
     }
 
+    @CachePut(key = "#userCreateUpdateDto.username")
     @Transactional
     @Override
     public UserReadDto createUser(UserCreateUpdateDto userCreateUpdateDto) {
@@ -67,6 +75,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User could not be created"));
     }
 
+    @CachePut(key = "#userCreateUpdateDto.username")
     @Transactional
     @Override
     public UserReadDto update(UserCreateUpdateDto userCreateUpdateDto) {
@@ -78,6 +87,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User %s not found".formatted(username)));
     }
 
+    @CacheEvict(key = "#username")
     @Transactional
     @Override
     public void delete(String username) {

@@ -1,6 +1,7 @@
 package com.ilyap.productivityservice.service.impl;
 
 import com.ilyap.logging.annotation.Logged;
+import com.ilyap.productivityservice.cache.HazelcastReactiveCache;
 import com.ilyap.productivityservice.exception.ProductivityNotFoundException;
 import com.ilyap.productivityservice.mapper.ProductivityCreateUpdateMapper;
 import com.ilyap.productivityservice.mapper.ProductivityReadMapper;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -26,12 +28,21 @@ public class ProductivityServiceImpl implements ProductivityService {
     private final ProductivityReadMapper readMapper;
     private final ProductivityCreateUpdateMapper createUpdateMapper;
     private final ProductivityRepository productivityRepository;
+    private final HazelcastReactiveCache hazelcastCache;
 
     @Override
     public Mono<ProductivityReadDto> findById(UUID id) {
-        return productivityRepository.findById(id)
-                .map(readMapper::toDto)
-                .switchIfEmpty(Mono.error(() -> new ProductivityNotFoundException(id.toString())));
+        return hazelcastCache.get(id)
+                .switchIfEmpty(
+                        productivityRepository.findById(id)
+                                .map(readMapper::toDto)
+                                .publishOn(Schedulers.boundedElastic())
+                                .flatMap(fetchedDto ->
+                                        hazelcastCache.put(id, fetchedDto)
+                                                .then(Mono.just(fetchedDto))
+                                )
+                                .switchIfEmpty(Mono.error(new ProductivityNotFoundException(id.toString())))
+                );
     }
 
     @Override
@@ -50,7 +61,11 @@ public class ProductivityServiceImpl implements ProductivityService {
                 .map(createUpdateMapper::toEntity)
                 .doOnNext(productivity -> productivity.setId(UUID.randomUUID()))
                 .flatMap(productivityRepository::save)
-                .map(readMapper::toDto);
+                .map(readMapper::toDto)
+                .flatMap(fetchedDto ->
+                        hazelcastCache.put(UUID.fromString(fetchedDto.id()), fetchedDto)
+                                .then(Mono.just(fetchedDto))
+                );
     }
 
     @Transactional
@@ -60,13 +75,18 @@ public class ProductivityServiceImpl implements ProductivityService {
                 .map(productivity -> createUpdateMapper.toEntity(productivityCreateUpdateDto, productivity))
                 .flatMap(productivityRepository::save)
                 .map(readMapper::toDto)
-                .switchIfEmpty(Mono.error(() -> new ProductivityNotFoundException(id.toString())));
+                .flatMap(updatedDto ->
+                        hazelcastCache.put(id, updatedDto)
+                                .then(Mono.just(updatedDto))
+                )
+                .switchIfEmpty(Mono.error(new ProductivityNotFoundException(id.toString())));
     }
 
     @Transactional
     @Override
     public Mono<Void> delete(UUID id) {
-        return productivityRepository.deleteById(id);
+        return productivityRepository.deleteById(id)
+                .then(hazelcastCache.evict(id));
     }
 
     @Transactional
