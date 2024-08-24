@@ -37,7 +37,7 @@ public class UsersController {
         if (bindingResult.hasErrors()) {
             throw new BindException(bindingResult);
         }
-        UserReadDto userReadDto = userService.createUser(userCreateUpdateDto);
+        UserReadDto userReadDto = userService.create(userCreateUpdateDto);
         return ResponseEntity.created(
                         ServletUriComponentsBuilder
                                 .fromCurrentRequestUri()

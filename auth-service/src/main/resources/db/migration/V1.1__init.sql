@@ -1,6 +1,0 @@
-CREATE TABLE IF NOT EXISTS users (
-    id       SERIAL PRIMARY KEY,
-    username VARCHAR(64) NOT NULL UNIQUE,
-    password VARCHAR(128),
-    role     VARCHAR(32)
-);

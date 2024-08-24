@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS users (
-    id        SERIAL PRIMARY KEY,
+    id        BIGSERIAL PRIMARY KEY,
     username  VARCHAR(64)  NOT NULL UNIQUE,
     firstname VARCHAR(64)  NOT NULL,
     lastname  VARCHAR(64)  NOT NULL,

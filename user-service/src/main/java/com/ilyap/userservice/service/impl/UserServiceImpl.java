@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
     @CachePut(key = "#userCreateUpdateDto.username")
     @Transactional
     @Override
-    public UserReadDto createUser(UserCreateUpdateDto userCreateUpdateDto) {
+    public UserReadDto create(UserCreateUpdateDto userCreateUpdateDto) {
         String username = userCreateUpdateDto.username();
         userRepository.findByUsername(username)
                 .ifPresent(user -> {

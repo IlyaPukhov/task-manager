@@ -13,7 +13,7 @@ public interface UserService {
 
     UserReadDto findByUsername(String username);
 
-    UserReadDto createUser(UserCreateUpdateDto userCreateUpdateDto);
+    UserReadDto create(UserCreateUpdateDto userCreateUpdateDto);
 
     UserReadDto update(UserCreateUpdateDto taskCreateUpdateDto);
 

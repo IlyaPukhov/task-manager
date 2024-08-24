@@ -28,7 +28,7 @@ public class TaskManagerUser extends AuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @NaturalId
     private String username;

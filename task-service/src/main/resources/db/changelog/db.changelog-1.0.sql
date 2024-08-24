@@ -2,7 +2,7 @@
 
 --changeset ilyap:1
 CREATE TABLE IF NOT EXISTS task (
-    id          SERIAL PRIMARY KEY,
+    id          BIGSERIAL PRIMARY KEY,
     title       VARCHAR(64)  NOT NULL UNIQUE,
     description VARCHAR(256) NOT NULL,
     status      VARCHAR(32),

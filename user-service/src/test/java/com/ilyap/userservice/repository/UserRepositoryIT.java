@@ -20,7 +20,7 @@ class UserRepositoryIT extends IntegrationTestBase {
 
     @Test
     void findByUsername_returnsTaskManagerUser() {
-        var expectedUser = new TaskManagerUser(1, "norris", "Chuck", "Norris",
+        var expectedUser = new TaskManagerUser(1L, "norris", "Chuck", "Norris",
                 LocalDate.of(1940, 1, 1), "r5Q9v@example.com", null);
         var username = "norris";
 
