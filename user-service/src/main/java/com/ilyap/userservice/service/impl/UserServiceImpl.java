@@ -55,13 +55,13 @@ public class UserServiceImpl implements UserService {
     public UserReadDto findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .map(userReadMapper::toDto)
-                .orElseThrow(() -> new UserNotFoundException("User %s not found".formatted(username)));
+                .orElseThrow(() -> new UserNotFoundException(username));
     }
 
     @CachePut(key = "#userCreateUpdateDto.username")
     @Transactional
     @Override
-    public UserReadDto createUser(UserCreateUpdateDto userCreateUpdateDto) {
+    public UserReadDto create(UserCreateUpdateDto userCreateUpdateDto) {
         String username = userCreateUpdateDto.username();
         userRepository.findByUsername(username)
                 .ifPresent(user -> {
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
                 .map(user -> userCreateUpdateMapper.toEntity(userCreateUpdateDto, user))
                 .map(userRepository::save)
                 .map(userReadMapper::toDto)
-                .orElseThrow(() -> new UserNotFoundException("User %s not found".formatted(username)));
+                .orElseThrow(() -> new UserNotFoundException(username));
     }
 
     @CacheEvict(key = "#username")

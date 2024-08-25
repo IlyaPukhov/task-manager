@@ -1,7 +1,0 @@
-CREATE TABLE IF NOT EXISTS users
-(
-    id       BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    username VARCHAR(64) NOT NULL UNIQUE,
-    password VARCHAR(128),
-    role     VARCHAR(32)
-);
