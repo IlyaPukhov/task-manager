@@ -108,7 +108,7 @@ class UsersControllerIT extends IntegrationTestBase {
                         content().json("""
                                 {
                                   "id": 4,
-                                  "username": "noNorris",
+                                  "username": "newNorris",
                                   "firstname": "Chuck",
                                   "lastname": "Norris",
                                   "birthdate": "1940-01-01",
