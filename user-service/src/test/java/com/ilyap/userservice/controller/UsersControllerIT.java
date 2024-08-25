@@ -21,8 +21,10 @@ import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,7 +45,7 @@ class UsersControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void findAll_returnsContent() throws Exception {
+    void findAll_returnsTasksContent() throws Exception {
         var requestBuilder = MockMvcRequestBuilders.get("/api/v1/users")
                 .param("page", "0")
                 .param("size", "1")
@@ -83,12 +85,43 @@ class UsersControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void register() throws Exception {
-        var userCreateDto = new UserCreateUpdateDto("norris", "Chuck", "Norris", "1940-01-01", "r5Q9v@example.com", null);
-        var userReadDto = new UserReadDto(1L, "norris", "Chuck", "Norris", "1940-01-01", "r5Q9v@example.com", null, List.of());
+    void register_newUser_returnsCreatedUser() throws Exception {
+        var requestJson = """
+                {
+                    "username": "newNorris",
+                    "firstname": "Chuck",
+                    "lastname": "Norris",
+                    "birthdate": "1940-01-01",
+                    "email": "r5Q9v@example.com",
+                    "biography": null
+                }
+                """;
 
-        doReturn(userReadDto).when(userService).create(any(UserCreateUpdateDto.class));
+        mockMvc.perform(post("/api/v1/users/registration")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andDo(print())
+                .andExpectAll(
+                        status().isCreated(),
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
+                        header().string("Location", "http://localhost/api/v1/users/newNorris"),
+                        content().json("""
+                                {
+                                  "id": 4,
+                                  "username": "noNorris",
+                                  "firstname": "Chuck",
+                                  "lastname": "Norris",
+                                  "birthdate": "1940-01-01",
+                                  "email": "r5Q9v@example.com",
+                                  "biography": null,
+                                  "tasks_ids":[]
+                                }
+                                """)
+                );
+    }
 
+    @Test
+    void register_userAlreadyExists_returnsConflict() throws Exception {
         var requestJson = """
                 {
                     "username": "norris",
@@ -100,29 +133,22 @@ class UsersControllerIT extends IntegrationTestBase {
                 }
                 """;
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users/registration")
+        mockMvc.perform(post("/api/v1/users/registration")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andDo(print())
                 .andExpectAll(
-                        status().isCreated(),
-                        content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
-                        jsonPath("$.id").value(1),
-                        jsonPath("$.username").value("norris"),
-                        jsonPath("$.firstname").value("Chuck"),
-                        jsonPath("$.lastname").value("Norris"),
-                        jsonPath("$.birthdate").value("1940-01-01"),
-                        jsonPath("$.email").value("r5Q9v@example.com"),
-                        jsonPath("$.biography").value(nullValue())
+                        status().isConflict(),
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
+                        jsonPath("$.detail").value("User norris already exists")
                 );
     }
 
-
     @Test
-    void register_invalidData() throws Exception {
-        var invalidUserJson = """
+    void register_invalidPayload_returnsBadRequest() throws Exception {
+        var invalidRequestJson = """
                 {
-                    "username": "",
+                    "username": "norris",
                     "firstname": "Chuck",
                     "lastname": "Norris",
                     "birthdate": "1940-01-01",
@@ -130,21 +156,20 @@ class UsersControllerIT extends IntegrationTestBase {
                 }
                 """;
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/users/registration")
+        mockMvc.perform(post("/api/v1/users/registration")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidUserJson))
+                        .content(invalidRequestJson))
                 .andDo(print())
                 .andExpectAll(
                         status().isBadRequest(),
-                        jsonPath("$.error").value("Validation failed"),
-                        jsonPath("$.status").value(400)
+                        content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
+                        jsonPath("$.detail").value("Failed to bind request")
                 );
     }
 
-
     @Test
-    void findByTaskId_returnsTaskResponse() throws Exception {
-        var taskId = 999L;
+    void findByTaskId_returnsUserResponse() throws Exception {
+        var taskId = 15L;
         doReturn(new TaskResponse(taskId, null, null, null, null, "norris"))
                 .when(taskServiceClient).findTaskByTaskId(taskId);
 
@@ -153,19 +178,24 @@ class UsersControllerIT extends IntegrationTestBase {
                 .andExpectAll(
                         status().isOk(),
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
-                        jsonPath("$.id").value(1),
-                        jsonPath("$.username").value("norris"),
-                        jsonPath("$.firstname").value("Chuck"),
-                        jsonPath("$.lastname").value("Norris"),
-                        jsonPath("$.birthdate").value("1940-01-01"),
-                        jsonPath("$.email").value("r5Q9v@example.com"),
-                        jsonPath("$.biography").value(nullValue())
+                        content().json("""
+                                {
+                                  "id": 1,
+                                  "username": "norris",
+                                  "firstname": "Chuck",
+                                  "lastname": "Norris",
+                                  "birthdate": "1940-01-01",
+                                  "email": "r5Q9v@example.com",
+                                  "biography": null,
+                                  "tasks_ids":[]
+                                }
+                                """)
                 );
     }
 
     @Test
-    void findByTaskId_ownerUsernameNotFound_returnsNotFound() throws Exception {
-        var taskId = 999L;
+    void findByTaskId_ownerUserNotExists_returnsNotFound() throws Exception {
+        var taskId = 999_999L;
         doReturn(new TaskResponse(taskId, null, null, null, null, "noNorris"))
                 .when(taskServiceClient).findTaskByTaskId(taskId);
 
