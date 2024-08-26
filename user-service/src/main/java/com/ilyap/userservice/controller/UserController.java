@@ -1,5 +1,6 @@
 package com.ilyap.userservice.controller;
 
+import com.ilyap.userservice.controller.api.UserControllerApi;
 import com.ilyap.userservice.model.dto.UserCreateUpdateDto;
 import com.ilyap.userservice.model.dto.UserReadDto;
 import com.ilyap.userservice.service.UserService;
@@ -20,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/users/{username:\\w+}")
 @RequiredArgsConstructor
-public class UserController {
+public class UserController implements UserControllerApi {
 
     private final UserService userService;
 
