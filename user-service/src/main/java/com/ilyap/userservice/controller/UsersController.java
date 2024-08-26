@@ -1,5 +1,6 @@
 package com.ilyap.userservice.controller;
 
+import com.ilyap.userservice.controller.api.UsersControllerApi;
 import com.ilyap.userservice.model.dto.PageResponse;
 import com.ilyap.userservice.model.dto.UserCreateUpdateDto;
 import com.ilyap.userservice.model.dto.UserReadDto;
@@ -22,7 +23,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
-public class UsersController {
+public class UsersController implements UsersControllerApi {
 
     private final UserService userService;
 
