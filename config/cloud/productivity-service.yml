@@ -2,11 +2,11 @@ server:
   port: 8083
 spring:
   data:
-  mongodb:
-    uri: mongodb://${PRODUCTIVITY_SERVICE_DB_HOST:localhost:27017}/${PRODUCTIVITY_SERVICE_DB}
-    username: ${PRODUCTIVITY_SERVICE_USER}
-    password: ${PRODUCTIVITY_SERVICE_PASSWORD}
-    driver-class-name: org.postgresql.Driver
+    mongodb:
+      uri: mongodb://${PRODUCTIVITY_SERVICE_DB_HOST:localhost:27017}/${PRODUCTIVITY_SERVICE_DB}
+      username: ${PRODUCTIVITY_SERVICE_USER}
+      password: ${PRODUCTIVITY_SERVICE_PASSWORD}
+      driver-class-name: org.postgresql.Driver
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 1
