@@ -43,7 +43,7 @@ class UserControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void findByUsername_returnsUserResponse() throws Exception {
+    void findByUsername_userExists_returnsUserResponse() throws Exception {
         var username = "norris";
 
         mockMvc.perform(get("/api/v1/users/{username}", username))
@@ -143,7 +143,7 @@ class UserControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void updateUserDetails_notAuthorizedUser_returnsForbidden() throws Exception {
+    void updateUserDetails_userIsNotAuthorized_returnsForbidden() throws Exception {
         var username = "norris";
 
         mockMvc.perform(put("/api/v1/users/{username}", username)
@@ -180,7 +180,7 @@ class UserControllerIT extends IntegrationTestBase {
 
 
     @Test
-    void deleteUser_returnsNoContent() throws Exception {
+    void deleteUser_userIsAuthorized_returnsNoContent() throws Exception {
         var username = "norris";
 
         mockMvc.perform(delete("/api/v1/users/{username}", username)
@@ -190,7 +190,7 @@ class UserControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void deleteUser_notAuthorizedUser_returnsForbidden() throws Exception {
+    void deleteUser_userIsNotAuthorized_returnsForbidden() throws Exception {
         var username = "norris";
 
         mockMvc.perform(delete("/api/v1/users/{username}", username))

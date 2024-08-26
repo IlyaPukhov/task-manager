@@ -15,8 +15,8 @@ keycloak:
   client-secret: ${KEYCLOAK_CLIENT_SECRET}
 logging:
   level:
-    root: INFO
-    org.springframework.security: TRACE
+    root: info
+    org.springframework.security: trace
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 1

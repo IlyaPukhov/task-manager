@@ -45,7 +45,7 @@ class UsersControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void findAll_returnsTasksContent() throws Exception {
+    void findAll_validRequest_returnsTasksContent() throws Exception {
         var requestBuilder = MockMvcRequestBuilders.get("/api/v1/users")
                 .param("page", "0")
                 .param("size", "1")
@@ -168,7 +168,7 @@ class UsersControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void findByTaskId_returnsUserResponse() throws Exception {
+    void findByTaskId_ownerUserExists_returnsUserResponse() throws Exception {
         var taskId = 15L;
         doReturn(new TaskResponse(taskId, null, null, null, null, "norris"))
                 .when(taskServiceClient).findTaskByTaskId(taskId);

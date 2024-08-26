@@ -1,4 +1,4 @@
-package com.ilyap.userservice;
+package com.ilyap.productivityservice;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,14 +14,12 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.MongoDBContainer;
 
 import java.io.InputStream;
 import java.util.List;
 
 @DataMongoTest
-@Transactional
 @WithMockUser(username = "test@gmail.com", password = "test", authorities = {"ADMIN", "USER"})
 public class IntegrationTestBase {
 
@@ -41,7 +39,7 @@ public class IntegrationTestBase {
 
     @AfterEach
     void tearDown() {
-        mongoTemplate.remove(Productivity.class).all().block();
+        mongoTemplate.dropCollection(Productivity.class).block();
     }
 
     @BeforeAll
@@ -50,7 +48,7 @@ public class IntegrationTestBase {
     }
 
     @DynamicPropertySource
-    static void postgresProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", container::getConnectionString);
+    static void mongoProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.data.mongodb.uri", container::getReplicaSetUrl);
     }
 }

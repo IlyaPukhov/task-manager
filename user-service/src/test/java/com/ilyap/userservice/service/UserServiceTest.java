@@ -60,7 +60,7 @@ class UserServiceTest {
             "biography", Collections.singletonList(8L));
 
     @Test
-    void findAll() {
+    void findAll_returnsAllUsers() {
         var user = new TaskManagerUser();
         user.setId(EXPECTED_USER.getId());
 
@@ -149,7 +149,7 @@ class UserServiceTest {
     }
 
     @Test
-    void createUser_AlreadyExists_throwsException() {
+    void createUser_userAlreadyExists_throwsException() {
         var userCreateUpdateDto = new UserCreateUpdateDto(EXPECTED_USER.getUsername(), "firstname",
                 "lastname", LocalDate.EPOCH, "email", "biography", Collections.singletonList(8L));
         var taskManagerUser = new TaskManagerUser();

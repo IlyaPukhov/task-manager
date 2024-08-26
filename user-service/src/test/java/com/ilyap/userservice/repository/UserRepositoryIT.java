@@ -19,7 +19,7 @@ class UserRepositoryIT extends IntegrationTestBase {
     private final UserRepository userRepository;
 
     @Test
-    void findByUsername_returnsTaskManagerUser() {
+    void findByUsername_userExists_returnsTaskManagerUser() {
         var expectedUser = new TaskManagerUser(1L, "norris", "Chuck", "Norris",
                 LocalDate.of(1940, 1, 1), "r5Q9v@example.com", null);
         var username = "norris";
@@ -31,7 +31,7 @@ class UserRepositoryIT extends IntegrationTestBase {
     }
 
     @Test
-    void findByUsername_returnsEmptyOptional() {
+    void findByUsername_userNotExists_returnsEmptyOptional() {
         var username = "gates";
 
         var maybeUser = userRepository.findByUsername(username);

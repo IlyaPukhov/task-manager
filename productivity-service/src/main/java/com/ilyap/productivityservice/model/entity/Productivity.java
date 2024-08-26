@@ -1,5 +1,10 @@
 package com.ilyap.productivityservice.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
@@ -8,6 +13,7 @@ import org.springframework.data.util.ProxyUtils;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -22,13 +28,16 @@ public class Productivity extends AuditingEntity implements Serializable {
 
     private String username;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate date;
 
     private Integer mood;
 
     private ProductivityStatus productivityStatus;
 
-    private Map<ActivityType, Boolean> checklist;
+    private Map<ActivityType, Boolean> checklist = new HashMap<>();
 
     private String notes;
 
