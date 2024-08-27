@@ -5,6 +5,7 @@ import com.ilyap.productivityservice.mapper.ProductivityCreateUpdateMapper;
 import com.ilyap.productivityservice.mapper.ProductivityReadMapper;
 import com.ilyap.productivityservice.repository.ProductivityRepository;
 import com.ilyap.productivityservice.service.impl.ProductivityServiceImpl;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -27,4 +28,7 @@ class ProductivityServiceTest {
 
     @InjectMocks
     private ProductivityServiceImpl productivityService;
+
+    @Test
+    void test() {}
 }
