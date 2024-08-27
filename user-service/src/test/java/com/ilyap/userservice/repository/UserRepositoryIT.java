@@ -40,7 +40,7 @@ class UserRepositoryIT extends IntegrationTestBase {
     }
 
     @Test
-    void deleteByUsername() {
+    void deleteByUsername_successDeleted() {
         var username = "norris";
 
         userRepository.deleteByUsername(username);

@@ -63,7 +63,7 @@ public class ProductivityServiceImpl implements ProductivityService {
                 .flatMap(productivityRepository::save)
                 .map(readMapper::toDto)
                 .flatMap(fetchedDto ->
-                        hazelcastCache.put(UUID.fromString(fetchedDto.id()), fetchedDto)
+                        hazelcastCache.put(UUID.fromString(fetchedDto.getId()), fetchedDto)
                                 .then(Mono.just(fetchedDto))
                 );
     }

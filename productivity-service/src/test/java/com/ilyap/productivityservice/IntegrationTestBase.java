@@ -30,7 +30,7 @@ public class IntegrationTestBase {
 
     @BeforeEach
     @SneakyThrows
-    void setUp() {
+    void setUpData() {
         InputStream inputStream = new ClassPathResource("mongo/data.json").getInputStream();
         List<Productivity> documents = new ObjectMapper().readValue(inputStream, new TypeReference<>() {});
 

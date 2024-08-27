@@ -38,7 +38,7 @@ public class ProductivityListController {
                 .map(productivity -> ResponseEntity
                         .created(UriComponentsBuilder.fromUri(exchange.getRequest().getURI())
                                 .path("/{productivityId}")
-                                .build(productivity.id()))
+                                .build(productivity.getId()))
                         .body(productivity));
     }
 

@@ -5,21 +5,26 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.util.ProxyUtils;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Document
 public class Productivity extends AuditingEntity implements Serializable {
 
@@ -37,15 +42,9 @@ public class Productivity extends AuditingEntity implements Serializable {
 
     private ProductivityStatus productivityStatus;
 
-    private Map<ActivityType, Boolean> checklist = new HashMap<>();
+    private Map<ActivityType, Boolean> checklist;
 
     private String notes;
-
-    {
-        for (ActivityType activity : ActivityType.values()) {
-            checklist.put(activity, false);
-        }
-    }
 
     @Override
     public final boolean equals(Object object) {
