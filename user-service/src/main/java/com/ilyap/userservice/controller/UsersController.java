@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+/**
+ * Controller for handling user-related requests.
+ */
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
@@ -27,12 +30,26 @@ public class UsersController implements UsersControllerApi {
 
     private final UserService userService;
 
+    /**
+     * Retrieves a paginated list of all users.
+     *
+     * @param pageable pagination information
+     * @return a {@link PageResponse} of {@link UserReadDto UserReadDtos}
+     */
     @GetMapping
     public PageResponse<UserReadDto> findAll(Pageable pageable) {
         Page<UserReadDto> page = userService.findAll(pageable);
         return PageResponse.of(page);
     }
 
+    /**
+     * Registers a new user.
+     *
+     * @param userCreateUpdateDto user data to register
+     * @param bindingResult validation result
+     * @return {@link ResponseEntity} of registered {@link UserReadDto}
+     * @throws BindException if validation fails
+     */
     @PostMapping("/registration")
     public ResponseEntity<?> register(@Validated @RequestBody UserCreateUpdateDto userCreateUpdateDto,
                                       BindingResult bindingResult) throws BindException {
@@ -50,6 +67,12 @@ public class UsersController implements UsersControllerApi {
                 .body(userReadDto);
     }
 
+    /**
+     * Retrieves the user who owns a task with the given ID.
+     *
+     * @param taskId task ID
+     * @return the user who owns the task
+     */
     @GetMapping("/tasks/{taskId:\\d+}")
     public UserReadDto findByTaskId(@PathVariable Long taskId) {
         return userService.findOwnerByTaskId(taskId);

@@ -1,7 +1,15 @@
 package com.ilyap.productivityservice.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.util.ProxyUtils;
@@ -14,6 +22,9 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 @Document
 public class Productivity extends AuditingEntity implements Serializable {
 
@@ -22,6 +33,9 @@ public class Productivity extends AuditingEntity implements Serializable {
 
     private String username;
 
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate date;
 
     private Integer mood;
@@ -31,12 +45,6 @@ public class Productivity extends AuditingEntity implements Serializable {
     private Map<ActivityType, Boolean> checklist;
 
     private String notes;
-
-    {
-        for (ActivityType activity : ActivityType.values()) {
-            checklist.put(activity, false);
-        }
-    }
 
     @Override
     public final boolean equals(Object object) {

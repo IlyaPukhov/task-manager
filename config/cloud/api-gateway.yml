@@ -45,10 +45,10 @@ auth-service:
   uri: http://${AUTH_SERVICE_HOST:localhost:8084}
 logging:
   level:
-    root: INFO
-    org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: INFO
-    org.springframework.cloud.gateway: TRACE
-    org.springframework.security: DEBUG
+    root: info
+    org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: info
+    org.springframework.cloud.gateway: trace
+    org.springframework.security: debug
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 1

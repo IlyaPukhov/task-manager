@@ -17,7 +17,7 @@ spring:
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
 logging:
   level:
-    root: INFO
+    root: info
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 1

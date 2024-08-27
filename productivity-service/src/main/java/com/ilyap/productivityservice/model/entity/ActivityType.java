@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ActivityType {
 
-    GYM("Gym"),
+    EXERCISE("Gym"),
     WORK("Work"),
     LEARN("Learn"),
     WALK("Walk"),

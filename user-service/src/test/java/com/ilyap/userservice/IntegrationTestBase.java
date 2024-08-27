@@ -1,11 +1,11 @@
 package com.ilyap.userservice;
 
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 @Sql("classpath:sql/data.sql")

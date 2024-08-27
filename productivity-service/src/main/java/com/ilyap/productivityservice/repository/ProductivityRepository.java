@@ -22,5 +22,7 @@ public interface ProductivityRepository extends ReactiveMongoRepository<Producti
             """)
     Flux<Productivity> findAllByUsername(String username, LocalDate startOfMonth, LocalDate endOfMonth);
 
+    Flux<Productivity> findAllByUsername(String username);
+
     Mono<Void> deleteAllByUsername(String username);
 }
