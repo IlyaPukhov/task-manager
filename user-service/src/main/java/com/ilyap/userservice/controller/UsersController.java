@@ -34,7 +34,7 @@ public class UsersController implements UsersControllerApi {
      * Retrieves a paginated list of all users.
      *
      * @param pageable pagination information
-     * @return a {@link PageResponse} of {@link UserReadDto}
+     * @return a {@link PageResponse} of {@link UserReadDto UserReadDtos}
      */
     @GetMapping
     public PageResponse<UserReadDto> findAll(Pageable pageable) {
