@@ -1,7 +1,7 @@
 package com.ilyap.userservice.mapper;
 
 import com.ilyap.userservice.model.dto.UserCreateUpdateDto;
-import com.ilyap.userservice.model.entity.TaskManagerUser;
+import com.ilyap.userservice.model.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingConstants;
@@ -12,10 +12,10 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserCreateUpdateMapper {
 
-    TaskManagerUser toEntity(UserCreateUpdateDto createUpdateDto);
+    User toEntity(UserCreateUpdateDto createUpdateDto);
 
     @Mapping(target = "id", ignore = true)
-    TaskManagerUser toEntity(UserCreateUpdateDto createUpdateDto, @MappingTarget TaskManagerUser user);
+    User toEntity(UserCreateUpdateDto createUpdateDto, @MappingTarget User user);
 
-    UserCreateUpdateDto toDto(TaskManagerUser user);
+    UserCreateUpdateDto toDto(User user);
 }

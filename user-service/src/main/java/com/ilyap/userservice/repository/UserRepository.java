@@ -1,29 +1,29 @@
 /**
- * Repository for managing TaskManagerUser entities.
+ * Repository for managing User entities.
  */
 package com.ilyap.userservice.repository;
 
-import com.ilyap.userservice.model.entity.TaskManagerUser;
+import com.ilyap.userservice.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
 /**
- * Defines the data access object (DAO) for TaskManagerUser entities.
- * Extends JpaRepository to inherit basic CRUD operations.
+ * Defines the repository layer for {@link User} entities.
+ * Extends JpaRepository to inherit basic Jpa/CRUD operations.
  */
-public interface UserRepository extends JpaRepository<TaskManagerUser, Long> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
     /**
-     * Finds a TaskManagerUser by their username.
+     * Finds a {@link User} by their username.
      *
      * @param username the username to search for
-     * @return an Optional containing the TaskManagerUser if found, or an empty Optional if not found
+     * @return an {@link Optional} of {@link User} if found, or an {@link Optional#empty} if not found
      */
-    Optional<TaskManagerUser> findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
     /**
-     * Deletes a TaskManagerUser by their username.
+     * Deletes a {@link User} by their username.
      *
      * @param username the username of the user to delete
      */
