@@ -11,9 +11,26 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+/**
+ * Global exception handler for the user service.
+ * <p>
+ * This class provides a centralized way to handle exceptions that occur in the user service.
+ * It uses Spring's {@link RestControllerAdvice @RestControllerAdvice} annotation to catch exceptions thrown by controllers.
+ */
 @RestControllerAdvice(basePackages = "com.ilyap.userservice.controller")
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    /**
+     * Handles {@link UserNotFoundException} exceptions.
+     * <p>
+     * This method catches UserNotFoundException exceptions thrown by controllers and returns
+     * a ResponseEntity with a ProblemDetail object containing the exception message and a
+     * {@link org.springframework.http.HttpStatus#NOT_FOUND NOT_FOUND} status code.
+     *
+     * @param exception the {@link UserNotFoundException} exception to handle
+     * @return a {@link ResponseEntity} with a {@link ProblemDetail} object and
+     * a {@link org.springframework.http.HttpStatus#NOT_FOUND NOT_FOUND} status code
+     */
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleEntityNotFoundException(UserNotFoundException exception) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(NOT_FOUND, exception.getMessage());
@@ -21,6 +38,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(problemDetail);
     }
 
+    /**
+     * Handles {@link UserAlreadyExistsException} exceptions.
+     * <p>
+     * This method catches UserAlreadyExistsException exceptions thrown by controllers and returns
+     * a ResponseEntity with a ProblemDetail object containing the exception message and a
+     * {@link org.springframework.http.HttpStatus#CONFLICT CONFLICT} status code.
+     *
+     * @param exception the {@link UserAlreadyExistsException} exception to handle
+     * @return a {@link ResponseEntity} with a {@link ProblemDetail} object and
+     * a {@link org.springframework.http.HttpStatus#CONFLICT CONFLICT} status code
+     */
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ProblemDetail> handleEntityAlreadyExistsException(UserAlreadyExistsException exception) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(CONFLICT, exception.getMessage());
