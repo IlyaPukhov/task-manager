@@ -2,6 +2,7 @@ package com.ilyap.userservice.controller.advice;
 
 import com.ilyap.userservice.exception.UserAlreadyExistsException;
 import com.ilyap.userservice.exception.UserNotFoundException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,11 +26,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * <p>
      * This method catches UserNotFoundException exceptions thrown by controllers and returns
      * a ResponseEntity with a ProblemDetail object containing the exception message and a
-     * {@link org.springframework.http.HttpStatus#NOT_FOUND NOT_FOUND} status code.
+     * {@link HttpStatus#NOT_FOUND NOT_FOUND} status code.
      *
      * @param exception the {@link UserNotFoundException} exception to handle
      * @return a {@link ResponseEntity} with a {@link ProblemDetail} object and
-     * a {@link org.springframework.http.HttpStatus#NOT_FOUND NOT_FOUND} status code
+     * a {@link HttpStatus#NOT_FOUND NOT_FOUND} status code
      */
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ProblemDetail> handleEntityNotFoundException(UserNotFoundException exception) {
@@ -43,11 +44,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * <p>
      * This method catches UserAlreadyExistsException exceptions thrown by controllers and returns
      * a ResponseEntity with a ProblemDetail object containing the exception message and a
-     * {@link org.springframework.http.HttpStatus#CONFLICT CONFLICT} status code.
+     * {@link HttpStatus#CONFLICT CONFLICT} status code.
      *
      * @param exception the {@link UserAlreadyExistsException} exception to handle
      * @return a {@link ResponseEntity} with a {@link ProblemDetail} object and
-     * a {@link org.springframework.http.HttpStatus#CONFLICT CONFLICT} status code
+     * a {@link HttpStatus#CONFLICT CONFLICT} status code
      */
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<ProblemDetail> handleEntityAlreadyExistsException(UserAlreadyExistsException exception) {

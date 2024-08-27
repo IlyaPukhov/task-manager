@@ -27,7 +27,7 @@ public interface TaskServiceClient {
      * Retrieves all tasks owned by a specific user.
      *
      * @param ownerUsername the username of the task owner
-     * @return a {@link PageResponse} of {@link TaskResponse TaskResponses}
+     * @return a {@link PageResponse} of {@link TaskResponse}
      */
     @GetMapping("/user/{ownerUsername}")
     PageResponse<TaskResponse> findAllTasks(@PathVariable String ownerUsername);
