@@ -8,6 +8,8 @@ spring:
   cloud:
     config:
       enabled: false
+  jackson:
+    property-naming-strategy: SNAKE_CASE
 eureka:
   client:
     enabled: false

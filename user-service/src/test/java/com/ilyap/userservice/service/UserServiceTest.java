@@ -8,13 +8,15 @@ import com.ilyap.userservice.mapper.UserReadMapper;
 import com.ilyap.userservice.model.dto.TaskResponse;
 import com.ilyap.userservice.model.dto.UserCreateUpdateDto;
 import com.ilyap.userservice.model.dto.UserReadDto;
-import com.ilyap.userservice.model.entity.TaskManagerUser;
+import com.ilyap.userservice.model.entity.User;
 import com.ilyap.userservice.repository.UserRepository;
 import com.ilyap.userservice.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +30,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.only;
@@ -39,8 +42,8 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
-    @Mock
-    private UserCreateUpdateMapper userCreateUpdateMapper;
+    @Spy
+    private UserCreateUpdateMapper userCreateUpdateMapper = Mappers.getMapper(UserCreateUpdateMapper.class);
 
     @Mock
     private UserReadMapper userReadMapper;
@@ -60,11 +63,11 @@ class UserServiceTest {
 
     @Test
     void findAll_returnsAllUsers() {
-        var user = new TaskManagerUser();
+        var user = new User();
         user.setId(EXPECTED_USER.getId());
 
         doReturn(new PageImpl<>(List.of(user))).when(userRepository).findAll(any(Pageable.class));
-        doReturn(EXPECTED_USER).when(userReadMapper).toDto(any(TaskManagerUser.class));
+        doReturn(EXPECTED_USER).when(userReadMapper).toDto(any(User.class));
 
         var result = userService.findAll(Pageable.unpaged());
 
@@ -80,8 +83,8 @@ class UserServiceTest {
 
         doReturn(new TaskResponse(taskId, null, null, null, null, "username"))
                 .when(taskServiceClient).findTaskByTaskId(taskId);
-        doReturn(Optional.of(new TaskManagerUser())).when(userRepository).findByUsername(EXPECTED_USER.getUsername());
-        doReturn(EXPECTED_USER).when(userReadMapper).toDto(any(TaskManagerUser.class));
+        doReturn(Optional.of(new User())).when(userRepository).findByUsername(EXPECTED_USER.getUsername());
+        doReturn(EXPECTED_USER).when(userReadMapper).toDto(any(User.class));
 
         var result = userService.findOwnerByTaskId(taskId);
 
@@ -108,8 +111,8 @@ class UserServiceTest {
 
     @Test
     void findByUsername_userExists_returnsFoundedUser() {
-        doReturn(Optional.of(new TaskManagerUser())).when(userRepository).findByUsername(EXPECTED_USER.getUsername());
-        doReturn(EXPECTED_USER).when(userReadMapper).toDto(any(TaskManagerUser.class));
+        doReturn(Optional.of(new User())).when(userRepository).findByUsername(EXPECTED_USER.getUsername());
+        doReturn(EXPECTED_USER).when(userReadMapper).toDto(any(User.class));
 
         var result = userService.findByUsername(EXPECTED_USER.getUsername());
 
@@ -134,16 +137,21 @@ class UserServiceTest {
                 "lastname", LocalDate.EPOCH, "email", "biography", Collections.singletonList(8L));
         doReturn(Optional.empty())
                 .when(userRepository).findByUsername(userCreateUpdateDto.username());
-        doReturn(new TaskManagerUser()).when(userCreateUpdateMapper).toEntity(userCreateUpdateDto);
-        doReturn(new TaskManagerUser()).when(userRepository).save(any());
-        doReturn(EXPECTED_USER).when(userReadMapper).toDto(any(TaskManagerUser.class));
+        doAnswer(invocation -> invocation.getArguments()[0]).when(userRepository).save(any());
+        doReturn(EXPECTED_USER).when(userReadMapper).toDto(any(User.class));
 
         var result = userService.create(userCreateUpdateDto);
 
         assertNotNull(result);
         assertThat(result).isEqualTo(EXPECTED_USER);
         verify(userRepository, times(1)).findByUsername(any(String.class));
-        verify(userRepository, times(1)).save(any(TaskManagerUser.class));
+        verify(userRepository, times(1))
+                .save(argThat(user ->
+                        user.getUsername().equals(EXPECTED_USER.getUsername())
+                        && user.getFirstname().equals(EXPECTED_USER.getFirstname()) && user.getLastname().equals(EXPECTED_USER.getLastname())
+                        && user.getBirthdate().equals(EXPECTED_USER.getBirthdate()) && user.getEmail().equals(EXPECTED_USER.getEmail())
+                        && user.getBiography().equals(EXPECTED_USER.getBiography())
+                ));
         verifyNoMoreInteractions(userRepository);
     }
 
@@ -151,14 +159,14 @@ class UserServiceTest {
     void createUser_userAlreadyExists_throwsException() {
         var userCreateUpdateDto = new UserCreateUpdateDto(EXPECTED_USER.getUsername(), "firstname",
                 "lastname", LocalDate.EPOCH, "email", "biography", Collections.singletonList(8L));
-        var taskManagerUser = new TaskManagerUser();
-        taskManagerUser.setUsername(userCreateUpdateDto.username());
-        doReturn(Optional.of(taskManagerUser))
+        var user = new User();
+        user.setUsername(userCreateUpdateDto.username());
+        doReturn(Optional.of(user))
                 .when(userRepository).findByUsername(userCreateUpdateDto.username());
 
         assertThatThrownBy(() -> userService.create(userCreateUpdateDto))
                 .isInstanceOf(UserAlreadyExistsException.class)
-                .hasMessageContaining(taskManagerUser.getUsername());
+                .hasMessageContaining(user.getUsername());
         verify(userRepository, times(1)).findByUsername(any(String.class));
         verify(userRepository, times(0)).save(any());
         verifyNoMoreInteractions(userRepository);
@@ -168,39 +176,44 @@ class UserServiceTest {
     void updateUser_userExists_userUpdated() {
         var userCreateUpdateDto = new UserCreateUpdateDto(EXPECTED_USER.getUsername(), "firstname",
                 "lastname", LocalDate.EPOCH, "email", "biography", Collections.singletonList(8L));
-        doReturn(Optional.of(new TaskManagerUser()))
+        doReturn(Optional.of(new User(0L, "username", "firstname", "lastname", LocalDate.EPOCH, "email", "biography")))
                 .when(userRepository).findByUsername(userCreateUpdateDto.username());
-        doReturn(new TaskManagerUser()).when(userCreateUpdateMapper).toEntity(eq(userCreateUpdateDto), any(TaskManagerUser.class));
-        doReturn(new TaskManagerUser()).when(userRepository).save(any());
-        doReturn(EXPECTED_USER).when(userReadMapper).toDto(any(TaskManagerUser.class));
+        doAnswer(invocation -> invocation.getArguments()[0]).when(userRepository).save(any());
+        doReturn(EXPECTED_USER).when(userReadMapper).toDto(any(User.class));
 
         var result = userService.update(userCreateUpdateDto);
 
         assertNotNull(result);
         assertThat(result).isEqualTo(EXPECTED_USER);
         verify(userRepository, times(1)).findByUsername(any(String.class));
-        verify(userRepository, times(1)).save(any(TaskManagerUser.class));
+        verify(userRepository, times(1))
+                .save(argThat(user ->
+                        user.getUsername().equals(EXPECTED_USER.getUsername())
+                        && user.getFirstname().equals(EXPECTED_USER.getFirstname()) && user.getLastname().equals(EXPECTED_USER.getLastname())
+                        && user.getBirthdate().equals(EXPECTED_USER.getBirthdate()) && user.getEmail().equals(EXPECTED_USER.getEmail())
+                        && user.getBiography().equals(EXPECTED_USER.getBiography())
+                ));
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
     void updateUser_userNotExists_throwsException() {
         var userCreateUpdateDto = new UserCreateUpdateDto(EXPECTED_USER.getUsername(), "firstname",
                 "lastname", LocalDate.EPOCH, "email", "biography", Collections.singletonList(8L));
-        var taskManagerUser = new TaskManagerUser();
-        taskManagerUser.setUsername(userCreateUpdateDto.username());
-        doReturn(Optional.of(taskManagerUser))
-                .when(userRepository).findByUsername(userCreateUpdateDto.username());
+        var username = userCreateUpdateDto.username();
+        doReturn(Optional.empty())
+                .when(userRepository).findByUsername(username);
 
         assertThatThrownBy(() -> userService.update(userCreateUpdateDto))
                 .isInstanceOf(UserNotFoundException.class)
-                .hasMessageContaining(taskManagerUser.getUsername());
+                .hasMessageContaining(username);
         verify(userRepository, times(1)).findByUsername(any(String.class));
         verify(userRepository, times(0)).save(any());
         verifyNoMoreInteractions(userRepository);
     }
 
     @Test
-    void deleteUser_userDeleted() {
+    void deleteUserById_deletesUser() {
         doNothing().when(userRepository).deleteByUsername(any(String.class));
 
         userService.delete(EXPECTED_USER.getUsername());

@@ -1,7 +1,7 @@
 package com.ilyap.userservice.repository;
 
 import com.ilyap.userservice.IntegrationTestBase;
-import com.ilyap.userservice.model.entity.TaskManagerUser;
+import com.ilyap.userservice.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -19,8 +19,8 @@ class UserRepositoryIT extends IntegrationTestBase {
     private final UserRepository userRepository;
 
     @Test
-    void findByUsername_userExists_returnsTaskManagerUser() {
-        var expectedUser = new TaskManagerUser(1L, "norris", "Chuck", "Norris",
+    void findByUsername_userExists_returnsUser() {
+        var expectedUser = new User(1L, "norris", "Chuck", "Norris",
                 LocalDate.of(1940, 1, 1), "r5Q9v@example.com", null);
         var username = "norris";
 

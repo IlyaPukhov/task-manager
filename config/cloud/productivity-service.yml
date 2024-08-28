@@ -1,6 +1,8 @@
 server:
   port: 8083
 spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
   data:
     mongodb:
       uri: mongodb://${PRODUCTIVITY_SERVICE_DB_HOST:localhost:27017}/${PRODUCTIVITY_SERVICE_DB}
