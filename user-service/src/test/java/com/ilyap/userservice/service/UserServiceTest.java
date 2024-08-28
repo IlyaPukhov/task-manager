@@ -34,6 +34,7 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -168,7 +169,7 @@ class UserServiceTest {
                 .isInstanceOf(UserAlreadyExistsException.class)
                 .hasMessageContaining(user.getUsername());
         verify(userRepository, times(1)).findByUsername(any(String.class));
-        verify(userRepository, times(0)).save(any());
+        verify(userRepository, never()).save(any());
         verifyNoMoreInteractions(userRepository);
     }
 
@@ -208,7 +209,7 @@ class UserServiceTest {
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining(username);
         verify(userRepository, times(1)).findByUsername(any(String.class));
-        verify(userRepository, times(0)).save(any());
+        verify(userRepository,never()).save(any());
         verifyNoMoreInteractions(userRepository);
     }
 

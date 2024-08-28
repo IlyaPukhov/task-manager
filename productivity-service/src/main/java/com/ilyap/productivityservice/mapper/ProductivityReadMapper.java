@@ -10,6 +10,7 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING,
@@ -25,7 +26,7 @@ public interface ProductivityReadMapper {
     default void fillChecklist(Productivity productivity, @MappingTarget ProductivityReadDto productivityReadDto) {
         Map<ActivityType, Boolean> checklist = productivity.getChecklist() != null
                 ? productivity.getChecklist()
-                : Map.of();
+                : new HashMap<>();
 
         for (ActivityType activity : ActivityType.values()) {
             checklist.putIfAbsent(activity, false);
