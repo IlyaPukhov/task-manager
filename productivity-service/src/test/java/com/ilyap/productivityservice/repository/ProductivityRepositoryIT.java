@@ -19,7 +19,7 @@ class ProductivityRepositoryIT extends IntegrationTestBase {
 
     private final ProductivityRepository productivityRepository;
 
-    private static final Map<ActivityType, Boolean> checklist = Map.of(
+    private static final Map<ActivityType, Boolean> CHECKLIST = Map.of(
             ActivityType.EXERCISE, true,
             ActivityType.FAMILY_TIME, false,
             ActivityType.WORK, true
@@ -27,7 +27,7 @@ class ProductivityRepositoryIT extends IntegrationTestBase {
 
     private static final Productivity EXPECTED_PRODUCTIVITY = new Productivity(UUID.fromString("e7a1ff78-d6f1-4f77-bd3b-4e8b0b85af0f"),
             "norris", LocalDate.of(2024, 8, 26), 8, ProductivityStatus.GOOD,
-            checklist, "Highly productive day, all activities were completed.");
+            CHECKLIST, "Highly productive day, all activities were completed.");
 
     @Test
     void findAllByUsername_validIntervalOrder_returnsProductivityFlux() {

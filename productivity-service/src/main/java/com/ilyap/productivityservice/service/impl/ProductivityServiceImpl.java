@@ -2,6 +2,7 @@ package com.ilyap.productivityservice.service.impl;
 
 import com.ilyap.logging.annotation.Logged;
 import com.ilyap.productivityservice.cache.HazelcastReactiveCache;
+import com.ilyap.productivityservice.exception.ProductivityAlreadyExistsException;
 import com.ilyap.productivityservice.exception.ProductivityNotFoundException;
 import com.ilyap.productivityservice.mapper.ProductivityCreateUpdateMapper;
 import com.ilyap.productivityservice.mapper.ProductivityReadMapper;
@@ -9,6 +10,7 @@ import com.ilyap.productivityservice.model.dto.ProductivityCreateUpdateDto;
 import com.ilyap.productivityservice.model.dto.ProductivityReadDto;
 import com.ilyap.productivityservice.repository.ProductivityRepository;
 import com.ilyap.productivityservice.service.ProductivityService;
+import com.mongodb.DuplicateKeyException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,6 +63,9 @@ public class ProductivityServiceImpl implements ProductivityService {
                 .map(createUpdateMapper::toEntity)
                 .doOnNext(productivity -> productivity.setId(UUID.randomUUID()))
                 .flatMap(productivityRepository::save)
+                .onErrorResume(DuplicateKeyException.class, e -> Mono.error(() ->
+                        new ProductivityAlreadyExistsException("A productivity entry with the same username and date already exists.")
+                ))
                 .map(readMapper::toDto)
                 .flatMap(fetchedDto ->
                         hazelcastCache.put(UUID.fromString(fetchedDto.getId()), fetchedDto)

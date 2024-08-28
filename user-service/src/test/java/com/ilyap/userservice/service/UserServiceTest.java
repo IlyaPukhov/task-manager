@@ -35,7 +35,6 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -75,7 +74,8 @@ class UserServiceTest {
         assertNotNull(result);
         assertThat(result.getTotalElements()).isEqualTo(1);
         assertThat(result.getContent().getFirst().getId()).isEqualTo(EXPECTED_USER.getId());
-        verify(userRepository, only()).findAll(any(Pageable.class));
+        verify(userRepository, times(1)).findAll(any(Pageable.class));
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
@@ -84,7 +84,7 @@ class UserServiceTest {
 
         doReturn(new TaskResponse(taskId, null, null, null, null, "username"))
                 .when(taskServiceClient).findTaskByTaskId(taskId);
-        doReturn(Optional.of(new User())).when(userRepository).findByUsername(EXPECTED_USER.getUsername());
+        doReturn(Optional.of(new User())).when(userRepository).findByUsername("username");
         doReturn(EXPECTED_USER).when(userReadMapper).toDto(any(User.class));
 
         var result = userService.findOwnerByTaskId(taskId);
@@ -92,7 +92,8 @@ class UserServiceTest {
         assertNotNull(result);
         assertThat(result).isEqualTo(EXPECTED_USER);
         verify(taskServiceClient).findTaskByTaskId(any(Long.class));
-        verify(userRepository, only()).findByUsername(any(String.class));
+        verify(userRepository, times(1)).findByUsername(any(String.class));
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
@@ -107,34 +108,37 @@ class UserServiceTest {
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("User not found");
         verify(taskServiceClient).findTaskByTaskId(any(Long.class));
-        verify(userRepository, only()).findByUsername(any(String.class));
+        verify(userRepository, times(1)).findByUsername(any(String.class));
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
     void findByUsername_userExists_returnsFoundedUser() {
-        doReturn(Optional.of(new User())).when(userRepository).findByUsername(EXPECTED_USER.getUsername());
+        doReturn(Optional.of(new User())).when(userRepository).findByUsername("username");
         doReturn(EXPECTED_USER).when(userReadMapper).toDto(any(User.class));
 
         var result = userService.findByUsername(EXPECTED_USER.getUsername());
 
         assertNotNull(result);
         assertThat(result).isEqualTo(EXPECTED_USER);
-        verify(userRepository, only()).findByUsername(any(String.class));
+        verify(userRepository, times(1)).findByUsername(any(String.class));
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
     void findByUsername_userNotExists_throwsException() {
-        doReturn(Optional.empty()).when(userRepository).findByUsername(EXPECTED_USER.getUsername());
+        doReturn(Optional.empty()).when(userRepository).findByUsername("username");
 
         assertThatThrownBy(() -> userService.findByUsername(EXPECTED_USER.getUsername()))
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining(EXPECTED_USER.getUsername());
-        verify(userRepository, only()).findByUsername(any(String.class));
+        verify(userRepository, times(1)).findByUsername(any(String.class));
+        verifyNoMoreInteractions(userRepository);
     }
 
     @Test
-    void createUser_newUser_Created() {
-        var userCreateUpdateDto = new UserCreateUpdateDto(EXPECTED_USER.getUsername(), "firstname",
+    void createUser_newUser_createsUser() {
+        var userCreateUpdateDto = new UserCreateUpdateDto("username", "firstname",
                 "lastname", LocalDate.EPOCH, "email", "biography", Collections.singletonList(8L));
         doReturn(Optional.empty())
                 .when(userRepository).findByUsername(userCreateUpdateDto.username());
@@ -149,8 +153,10 @@ class UserServiceTest {
         verify(userRepository, times(1))
                 .save(argThat(user ->
                         user.getUsername().equals(EXPECTED_USER.getUsername())
-                        && user.getFirstname().equals(EXPECTED_USER.getFirstname()) && user.getLastname().equals(EXPECTED_USER.getLastname())
-                        && user.getBirthdate().equals(EXPECTED_USER.getBirthdate()) && user.getEmail().equals(EXPECTED_USER.getEmail())
+                        && user.getFirstname().equals(EXPECTED_USER.getFirstname())
+                        && user.getLastname().equals(EXPECTED_USER.getLastname())
+                        && user.getBirthdate().equals(EXPECTED_USER.getBirthdate())
+                        && user.getEmail().equals(EXPECTED_USER.getEmail())
                         && user.getBiography().equals(EXPECTED_USER.getBiography())
                 ));
         verifyNoMoreInteractions(userRepository);
@@ -158,7 +164,7 @@ class UserServiceTest {
 
     @Test
     void createUser_userAlreadyExists_throwsException() {
-        var userCreateUpdateDto = new UserCreateUpdateDto(EXPECTED_USER.getUsername(), "firstname",
+        var userCreateUpdateDto = new UserCreateUpdateDto("username", "firstname",
                 "lastname", LocalDate.EPOCH, "email", "biography", Collections.singletonList(8L));
         var user = new User();
         user.setUsername(userCreateUpdateDto.username());
@@ -174,8 +180,8 @@ class UserServiceTest {
     }
 
     @Test
-    void updateUser_userExists_userUpdated() {
-        var userCreateUpdateDto = new UserCreateUpdateDto(EXPECTED_USER.getUsername(), "firstname",
+    void updateUser_userExists_updatesUser() {
+        var userCreateUpdateDto = new UserCreateUpdateDto("username", "firstname",
                 "lastname", LocalDate.EPOCH, "email", "biography", Collections.singletonList(8L));
         doReturn(Optional.of(new User(0L, "username", "firstname", "lastname", LocalDate.EPOCH, "email", "biography")))
                 .when(userRepository).findByUsername(userCreateUpdateDto.username());
@@ -190,8 +196,10 @@ class UserServiceTest {
         verify(userRepository, times(1))
                 .save(argThat(user ->
                         user.getUsername().equals(EXPECTED_USER.getUsername())
-                        && user.getFirstname().equals(EXPECTED_USER.getFirstname()) && user.getLastname().equals(EXPECTED_USER.getLastname())
-                        && user.getBirthdate().equals(EXPECTED_USER.getBirthdate()) && user.getEmail().equals(EXPECTED_USER.getEmail())
+                        && user.getFirstname().equals(EXPECTED_USER.getFirstname())
+                        && user.getLastname().equals(EXPECTED_USER.getLastname())
+                        && user.getBirthdate().equals(EXPECTED_USER.getBirthdate())
+                        && user.getEmail().equals(EXPECTED_USER.getEmail())
                         && user.getBiography().equals(EXPECTED_USER.getBiography())
                 ));
         verifyNoMoreInteractions(userRepository);
@@ -199,7 +207,7 @@ class UserServiceTest {
 
     @Test
     void updateUser_userNotExists_throwsException() {
-        var userCreateUpdateDto = new UserCreateUpdateDto(EXPECTED_USER.getUsername(), "firstname",
+        var userCreateUpdateDto = new UserCreateUpdateDto("username", "firstname",
                 "lastname", LocalDate.EPOCH, "email", "biography", Collections.singletonList(8L));
         var username = userCreateUpdateDto.username();
         doReturn(Optional.empty())
@@ -209,7 +217,7 @@ class UserServiceTest {
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining(username);
         verify(userRepository, times(1)).findByUsername(any(String.class));
-        verify(userRepository,never()).save(any());
+        verify(userRepository, never()).save(any());
         verifyNoMoreInteractions(userRepository);
     }
 
@@ -219,6 +227,7 @@ class UserServiceTest {
 
         userService.delete(EXPECTED_USER.getUsername());
 
-        verify(userRepository, only()).deleteByUsername(any(String.class));
+        verify(userRepository, times(1)).deleteByUsername(any(String.class));
+        verifyNoMoreInteractions(userRepository);
     }
 }
