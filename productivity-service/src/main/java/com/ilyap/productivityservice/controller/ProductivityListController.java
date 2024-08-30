@@ -30,7 +30,7 @@ public class ProductivityListController {
 
     private final ProductivityService productivityService;
 
-    @PostMapping("/create")
+    @PostMapping
     public Mono<ResponseEntity<ProductivityReadDto>> create(@Validated @RequestBody Mono<ProductivityCreateUpdateDto> createUpdateDto,
                                                             ServerWebExchange exchange) {
         return createUpdateDto

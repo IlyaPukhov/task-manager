@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final TaskServiceClient taskServiceClient;
 
+    @Cacheable(key = "'all-users'", condition = "#pageable.pageNumber == 0")
     @Override
     public Page<UserReadDto> findAll(Pageable pageable) {
         return userRepository.findAll(pageable)

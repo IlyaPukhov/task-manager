@@ -97,6 +97,7 @@ public class ProductivityServiceImpl implements ProductivityService {
     @Transactional
     @Override
     public Mono<Void> deleteAllByUsername(String username) {
-        return productivityRepository.deleteAllByUsername(username);
+        return productivityRepository.deleteAllByUsername(username)
+                .then(hazelcastCache.evictAll());
     }
 }
