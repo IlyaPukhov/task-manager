@@ -5,6 +5,8 @@ spring:
   jpa:
     properties.hibernate:
       hbm2ddl.auto: validate
+  jackson:
+    property-naming-strategy: SNAKE_CASE
   cloud:
     config:
       enabled: false
