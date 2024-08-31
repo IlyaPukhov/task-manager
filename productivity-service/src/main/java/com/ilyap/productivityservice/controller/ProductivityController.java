@@ -22,14 +22,14 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/productivity")
+@RequestMapping("/api/v1/productivity/{productivityId}")
 @RequiredArgsConstructor
 public class ProductivityController {
 
     private final ProductivityService productivityService;
     private final ProductivityPermissionHandler productivityPermissionHandler;
 
-    @GetMapping("/{productivityId}")
+    @GetMapping
     public Mono<ProductivityReadDto> findById(@PathVariable UUID productivityId,
                                               JwtAuthenticationToken authentication) {
         return productivityPermissionHandler.isProductivityUser(productivityId, authentication.getName())
@@ -39,7 +39,7 @@ public class ProductivityController {
                 );
     }
 
-    @PutMapping("/{productivityId}")
+    @PutMapping
     public Mono<ProductivityReadDto> update(@PathVariable UUID productivityId,
                                             @Validated @RequestBody ProductivityCreateUpdateDto createUpdateDto,
                                             JwtAuthenticationToken authentication) {
@@ -50,7 +50,7 @@ public class ProductivityController {
                 );
     }
 
-    @DeleteMapping("/{productivityId}")
+    @DeleteMapping
     public Mono<ResponseEntity<?>> delete(@PathVariable UUID productivityId,
                                           JwtAuthenticationToken authentication) {
         return productivityPermissionHandler.isProductivityUser(productivityId, authentication.getName())
