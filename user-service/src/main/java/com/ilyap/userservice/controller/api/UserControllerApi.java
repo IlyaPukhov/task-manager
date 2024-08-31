@@ -83,5 +83,5 @@ public interface UserControllerApi {
                     )
             )
     })
-    ResponseEntity<Void> delete(@Parameter(description = "Username of the user") String username);
+    ResponseEntity<?> delete(@Parameter(description = "Username of the user") String username);
 }

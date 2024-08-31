@@ -18,6 +18,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -68,14 +69,14 @@ class UserControllerIT extends IntegrationTestBase {
 
     @Test
     void findByUsername_userNotExists_returnsNotFound() throws Exception {
-        var username = "noNorris";
+        var nonExistentUsername = "noNorris";
 
-        mockMvc.perform(get("/api/v1/users/{username}", username))
+        mockMvc.perform(get("/api/v1/users/{username}", nonExistentUsername))
                 .andDo(print())
                 .andExpectAll(
                         status().isNotFound(),
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
-                        jsonPath("$.detail").value("User " + username + " not found")
+                        jsonPath("$.detail").value("User " + nonExistentUsername + " not found")
                 );
     }
 
@@ -118,7 +119,7 @@ class UserControllerIT extends IntegrationTestBase {
 
     @Test
     void updateUserDetails_userNotExists_returnsNotFound() throws Exception {
-        var username = "noNorris";
+        var nonExistentUsername = "noNorris";
         var requestJson = """
                 {
                     "username": "noNorris",
@@ -130,15 +131,15 @@ class UserControllerIT extends IntegrationTestBase {
                 }
                 """;
 
-        mockMvc.perform(put("/api/v1/users/{username}", username)
+        mockMvc.perform(put("/api/v1/users/{username}", nonExistentUsername)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
-                        .with(jwt().jwt(builder -> builder.subject(username))))
+                        .with(user(nonExistentUsername)))
                 .andDo(print())
                 .andExpectAll(
                         status().isNotFound(),
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
-                        jsonPath("$.detail").value("User " + username + " not found")
+                        jsonPath("$.detail").value("User " + nonExistentUsername + " not found")
                 );
     }
 

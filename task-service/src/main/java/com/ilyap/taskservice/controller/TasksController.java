@@ -53,7 +53,7 @@ public class TasksController {
 
     @PreAuthorize("#ownerUsername == authentication.name")
     @DeleteMapping("/user/{ownerUsername}")
-    public ResponseEntity<Void> deleteAllByUser(@PathVariable String ownerUsername) {
+    public ResponseEntity<?> deleteAllByUser(@PathVariable String ownerUsername) {
         taskService.deleteAllByUsername(ownerUsername);
         return ResponseEntity.noContent()
                 .build();

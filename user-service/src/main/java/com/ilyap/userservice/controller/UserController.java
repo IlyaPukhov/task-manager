@@ -73,7 +73,7 @@ public class UserController implements UserControllerApi {
      */
     @PreAuthorize("#username == authentication.name")
     @DeleteMapping
-    public ResponseEntity<Void> delete(@PathVariable String username) {
+    public ResponseEntity<?> delete(@PathVariable String username) {
         userService.delete(username);
         return ResponseEntity.noContent()
                 .build();

@@ -52,16 +52,13 @@ public class ProductivityListController {
     }
 
     @DeleteMapping("/user/{username}")
-    public Mono<ResponseEntity<Void>> deleteAllByUser(@PathVariable String username,
+    public Mono<ResponseEntity<?>> deleteAllByUser(@PathVariable String username,
                                                       JwtAuthenticationToken authentication) {
         return Mono.just(authentication.getName())
-                .flatMap(authenticatedUsername -> {
-                    if (authenticatedUsername.equals(username)) {
-                        return productivityService.deleteAllByUsername(username)
-                                .then(Mono.just(ResponseEntity.noContent().build()));
-                    } else {
-                        return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized"));
-                    }
-                });
+                .flatMap(authenticatedUsername -> authenticatedUsername.equals(username)
+                        ? productivityService.deleteAllByUsername(username)
+                                .then(Mono.just(ResponseEntity.noContent().build()))
+                        : Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN))
+                );
     }
 }

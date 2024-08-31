@@ -66,4 +66,49 @@ class ProductivityControllerIT extends IntegrationTestBase {
                         }""");
     }
 
+    @Test
+    void findById_productivityNotExists_returnsNotFound() {
+        var nonExistentUUID = UUID.fromString("123e4567-e89b-12d3-a456-426655440000");
+
+        webTestClient
+                .mutateWith(mockJwt().jwt(builder -> builder.subject("norris")))
+                .mutate().filter(ExchangeFilterFunction.ofRequestProcessor(this::printRequest))
+                .build()
+                .get()
+                .uri("/api/v1/productivity/{productivityId}", nonExistentUUID)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON)
+                .expectBody().jsonPath("$.detail").isEqualTo("Productivity with id " + nonExistentUUID + " not found");
+    }
+
+    @Test
+    void findById_userIsNotAuthorized_returnsUnauthorized() {
+        var uuid = UUID.fromString("123e4567-e89b-12d3-a456-426655440000");
+
+        webTestClient
+                .mutate().filter(ExchangeFilterFunction.ofRequestProcessor(this::printRequest))
+                .build()
+                .get()
+                .uri("/api/v1/productivity/{productivityId}", uuid)
+                .exchange()
+                .expectStatus().isUnauthorized()
+                .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON);
+    }
+
+    @Test
+    void findById_ownerIsNotAuthorized_returnsForbidden() {
+        var uuid = UUID.fromString("e7a1ff78-d6f1-4f77-bd3b-4e8b0b85af0f");
+
+        webTestClient
+                .mutateWith(mockJwt().jwt(builder -> builder.subject("noNorris")))
+                .mutate().filter(ExchangeFilterFunction.ofRequestProcessor(this::printRequest))
+                .build()
+                .get()
+                .uri("/api/v1/productivity/{productivityId}", uuid)
+                .exchange()
+                .expectStatus().isForbidden()
+                .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON);
+    }
+
 }
