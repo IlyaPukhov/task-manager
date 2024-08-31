@@ -37,6 +37,9 @@ class UserControllerIT extends IntegrationTestBase {
     @MockBean
     private TaskServiceClient taskServiceClient;
 
+    private static final String EXISTING_USERNAME = "norris";
+    private static final String NONEXISTENT_USERNAME = "noNorris";
+
     @BeforeEach
     void setUp() {
         doReturn(new PageResponse<TaskResponse>(List.of(), null))
@@ -45,9 +48,7 @@ class UserControllerIT extends IntegrationTestBase {
 
     @Test
     void findByUsername_userExists_returnsUserResponse() throws Exception {
-        var username = "norris";
-
-        mockMvc.perform(get("/api/v1/users/{username}", username))
+        mockMvc.perform(get("/api/v1/users/{username}", EXISTING_USERNAME))
                 .andDo(print())
                 .andExpectAll(
                         status().isOk(),
@@ -69,21 +70,18 @@ class UserControllerIT extends IntegrationTestBase {
 
     @Test
     void findByUsername_userNotExists_returnsNotFound() throws Exception {
-        var nonExistentUsername = "noNorris";
-
-        mockMvc.perform(get("/api/v1/users/{username}", nonExistentUsername))
+        mockMvc.perform(get("/api/v1/users/{username}", NONEXISTENT_USERNAME))
                 .andDo(print())
                 .andExpectAll(
                         status().isNotFound(),
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
-                        jsonPath("$.detail").value("User " + nonExistentUsername + " not found")
+                        jsonPath("$.detail").value("User " + NONEXISTENT_USERNAME + " not found")
                 );
     }
 
     @Test
     void updateUserDetails_userExists_returnsUpdatedUser() throws Exception {
-        var username = "norris";
-        var requestJson = """
+        var requestBody = """
                 {
                     "username": "norris",
                     "firstname": "Chuck",
@@ -94,10 +92,10 @@ class UserControllerIT extends IntegrationTestBase {
                 }
                 """;
 
-        mockMvc.perform(put("/api/v1/users/{username}", username)
+        mockMvc.perform(put("/api/v1/users/{username}", EXISTING_USERNAME)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson)
-                        .with(jwt().jwt(builder -> builder.subject(username))))
+                        .content(requestBody)
+                        .with(jwt().jwt(builder -> builder.subject(EXISTING_USERNAME))))
                 .andDo(print())
                 .andExpectAll(
                         status().isOk(),
@@ -119,8 +117,7 @@ class UserControllerIT extends IntegrationTestBase {
 
     @Test
     void updateUserDetails_userNotExists_returnsNotFound() throws Exception {
-        var nonExistentUsername = "noNorris";
-        var requestJson = """
+        var requestBody = """
                 {
                     "username": "noNorris",
                     "firstname": "Chuck",
@@ -131,23 +128,21 @@ class UserControllerIT extends IntegrationTestBase {
                 }
                 """;
 
-        mockMvc.perform(put("/api/v1/users/{username}", nonExistentUsername)
+        mockMvc.perform(put("/api/v1/users/{username}", NONEXISTENT_USERNAME)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson)
-                        .with(user(nonExistentUsername)))
+                        .content(requestBody)
+                        .with(user(NONEXISTENT_USERNAME)))
                 .andDo(print())
                 .andExpectAll(
                         status().isNotFound(),
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON),
-                        jsonPath("$.detail").value("User " + nonExistentUsername + " not found")
+                        jsonPath("$.detail").value("User " + NONEXISTENT_USERNAME + " not found")
                 );
     }
 
     @Test
-    void updateUserDetails_userIsNotAuthorized_returnsForbidden() throws Exception {
-        var username = "norris";
-
-        mockMvc.perform(put("/api/v1/users/{username}", username)
+    void updateUserDetails_ownerIsNotAuthorized_returnsForbidden() throws Exception {
+        mockMvc.perform(put("/api/v1/users/{username}", EXISTING_USERNAME)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{}"))
                 .andDo(print())
@@ -156,8 +151,7 @@ class UserControllerIT extends IntegrationTestBase {
 
     @Test
     void updateUserDetails_invalidPayload_returnsBadRequest() throws Exception {
-        var username = "norris";
-        var invalidRequestJson = """
+        var invalidRequestBody = """
                 {
                     "username": "norris",
                     "firstname": "Chuck",
@@ -167,10 +161,10 @@ class UserControllerIT extends IntegrationTestBase {
                 }
                 """;
 
-        mockMvc.perform(put("/api/v1/users/{username}", username)
+        mockMvc.perform(put("/api/v1/users/{username}", EXISTING_USERNAME)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(invalidRequestJson)
-                        .with(jwt().jwt(builder -> builder.subject(username))))
+                        .content(invalidRequestBody)
+                        .with(jwt().jwt(builder -> builder.subject(EXISTING_USERNAME))))
                 .andDo(print())
                 .andExpectAll(
                         status().isBadRequest(),
@@ -179,22 +173,17 @@ class UserControllerIT extends IntegrationTestBase {
                 );
     }
 
-
     @Test
-    void deleteUser_userIsAuthorized_returnsNoContent() throws Exception {
-        var username = "norris";
-
-        mockMvc.perform(delete("/api/v1/users/{username}", username)
-                        .with(jwt().jwt(builder -> builder.subject(username))))
+    void deleteUser_ownerIsAuthorized_returnsNoContent() throws Exception {
+        mockMvc.perform(delete("/api/v1/users/{username}", EXISTING_USERNAME)
+                        .with(jwt().jwt(builder -> builder.subject(EXISTING_USERNAME))))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
 
     @Test
-    void deleteUser_userIsNotAuthorized_returnsForbidden() throws Exception {
-        var username = "norris";
-
-        mockMvc.perform(delete("/api/v1/users/{username}", username))
+    void deleteUser_userIsNotOwner_returnsForbidden() throws Exception {
+        mockMvc.perform(delete("/api/v1/users/{username}", EXISTING_USERNAME))
                 .andDo(print())
                 .andExpect(status().isForbidden());
     }
