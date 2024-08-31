@@ -231,6 +231,7 @@ class ProductivityServiceTest {
     void deleteAllByUsername_deletesProductivities() {
         var username = EXPECTED_PRODUCTIVITY.getUsername();
         doReturn(Mono.empty()).when(productivityRepository).deleteAllByUsername(any(String.class));
+        doReturn(Mono.empty()).when(hazelcastCache).evictAll();
 
         StepVerifier.create(productivityService.deleteAllByUsername(username))
                 .verifyComplete();

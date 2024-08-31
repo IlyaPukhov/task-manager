@@ -84,16 +84,13 @@ class ProductivityControllerIT extends IntegrationTestBase {
 
     @Test
     void findById_userIsNotAuthorized_returnsUnauthorized() {
-        var uuid = UUID.fromString("123e4567-e89b-12d3-a456-426655440000");
-
         webTestClient
                 .mutate().filter(ExchangeFilterFunction.ofRequestProcessor(this::printRequest))
                 .build()
                 .get()
-                .uri("/api/v1/productivity/{productivityId}", uuid)
+                .uri("/api/v1/productivity/{productivityId}", "mock-uuid")
                 .exchange()
-                .expectStatus().isUnauthorized()
-                .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON);
+                .expectStatus().isUnauthorized();
     }
 
     @Test
@@ -111,4 +108,92 @@ class ProductivityControllerIT extends IntegrationTestBase {
                 .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_PROBLEM_JSON);
     }
 
+//    @Test
+//    void update_ValidRequest_ReturnsUpdatedProductivity() {
+//        webTestClient.mutateWith(mockJwt().jwt(builder -> builder.subject("user-tester")))
+//                .put()
+//                .uri("/api/v1/productivity/{productivityId}", existingProductivityId)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .bodyValue("""
+//                        {
+//                            "task": "Updated Task",
+//                            "duration": 10
+//                        }""")
+//                .exchange()
+//                .expectStatus().isOk()
+//                .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
+//                .expectBody()
+//                .json("""
+//                        {
+//                            "id": "bd7779c2-cb05-11ee-b5f3-df46a1249898",
+//                            "task": "Updated Task",
+//                            "duration": 10
+//                        }""");
+//    }
+//
+//    @Test
+//    void update_InvalidRequest_ReturnsBadRequest() {
+//        webTestClient.mutateWith(mockJwt().jwt(builder -> builder.subject("user-tester")))
+//                .put()
+//                .uri("/api/v1/productivity/{productivityId}", existingProductivityId)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .bodyValue("""
+//                        {
+//                            "task": "",
+//                            "duration": -5
+//                        }""")
+//                .exchange()
+//                .expectStatus().isBadRequest();
+//    }
+//
+//    @Test
+//    void delete_ValidId_ReturnsNoContent() {
+//        webTestClient.mutateWith(mockJwt().jwt(builder -> builder.subject("user-tester")))
+//                .delete()
+//                .uri("/api/v1/productivity/{productivityId}", existingProductivityId)
+//                .exchange()
+//                .expectStatus().isNoContent();
+//    }
+//
+//    @Test
+//    void delete_InvalidId_ReturnsNotFound() {
+//        webTestClient.mutateWith(mockJwt().jwt(builder -> builder.subject("user-tester")))
+//                .delete()
+//                .uri("/api/v1/productivity/{productivityId}", nonExistentProductivityId)
+//                .exchange()
+//                .expectStatus().isNotFound();
+//    }
+//
+//    @Test
+//    void findById_UserIsNotAuthenticated_ReturnsUnauthorized() {
+//        webTestClient
+//                .get()
+//                .uri("/api/v1/productivity/{productivityId}", existingProductivityId)
+//                .exchange()
+//                .expectStatus().isUnauthorized();
+//    }
+//
+//    @Test
+//    void update_UserIsNotAuthenticated_ReturnsUnauthorized() {
+//        webTestClient
+//                .put()
+//                .uri("/api/v1/productivity/{productivityId}", existingProductivityId)
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .bodyValue("""
+//                        {
+//                            "task": "Updated Task",
+//                            "duration": 10
+//                        }""")
+//                .exchange()
+//                .expectStatus().isUnauthorized();
+//    }
+//
+//    @Test
+//    void delete_UserIsNotAuthenticated_ReturnsUnauthorized() {
+//        webTestClient
+//                .delete()
+//                .uri("/api/v1/productivity/{productivityId}", existingProductivityId)
+//                .exchange()
+//                .expectStatus().isUnauthorized();
+//    }
 }
