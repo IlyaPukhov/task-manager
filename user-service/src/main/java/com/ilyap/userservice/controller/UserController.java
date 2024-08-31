@@ -52,7 +52,7 @@ public class UserController implements UserControllerApi {
      * @return {@link ResponseEntity} of updated {@link UserReadDto}
      * @throws BindException if the binding result has errors
      */
-    @PreAuthorize("#userCreateUpdateDto.username == principal.username")
+    @PreAuthorize("#userCreateUpdateDto.username == authentication.name")
     @PutMapping
     public ResponseEntity<?> update(@Validated @RequestBody UserCreateUpdateDto userCreateUpdateDto,
                                     BindingResult bindingResult) throws BindException {
@@ -71,7 +71,7 @@ public class UserController implements UserControllerApi {
      * @param username the username of the user to delete
      * @return {@link ResponseEntity} indicating that the user was deleted ({@link HttpStatus#NO_CONTENT NO_CONTENT})
      */
-    @PreAuthorize("#username == principal.username")
+    @PreAuthorize("#username == authentication.name")
     @DeleteMapping
     public ResponseEntity<Void> delete(@PathVariable String username) {
         userService.delete(username);

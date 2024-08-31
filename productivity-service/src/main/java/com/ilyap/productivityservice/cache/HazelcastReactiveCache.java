@@ -30,4 +30,8 @@ public class HazelcastReactiveCache {
     public Mono<Void> evict(UUID id) {
         return Mono.fromCompletionStage(() -> getProductivityCache().removeAsync(id)).then();
     }
+
+    public Mono<Void> evictAll() {
+        return Mono.fromRunnable(() -> getProductivityCache().clear()).then();
+    }
 }

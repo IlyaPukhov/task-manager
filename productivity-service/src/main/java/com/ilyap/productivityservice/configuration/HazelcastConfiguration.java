@@ -31,7 +31,7 @@ public class HazelcastConfiguration {
                 );
     }
 
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     @Primary
     public HazelcastInstance hazelcastInstance() {
         return Hazelcast.newHazelcastInstance(cacheConfig());

@@ -8,7 +8,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -19,7 +18,6 @@ import org.testcontainers.containers.MongoDBContainer;
 import java.io.InputStream;
 import java.util.List;
 
-@DataMongoTest
 @WithMockUser(username = "test@gmail.com", password = "test", authorities = {"ADMIN", "USER"})
 public class IntegrationTestBase {
 

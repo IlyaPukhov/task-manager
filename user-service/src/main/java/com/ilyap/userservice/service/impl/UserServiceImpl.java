@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
      * @param pageable the {@link Pageable} object to paginate the results
      * @return {@link Page} of {@link UserReadDto UserReadDtos}
      */
+    @Cacheable(key = "'all-users'", condition = "#pageable.pageNumber == 0")
     @Override
     public Page<UserReadDto> findAll(Pageable pageable) {
         return userRepository.findAll(pageable)

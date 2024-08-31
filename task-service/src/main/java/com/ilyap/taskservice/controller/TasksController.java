@@ -51,7 +51,7 @@ public class TasksController {
         return PageResponse.of(page);
     }
 
-    @PreAuthorize("#ownerUsername == principal.username")
+    @PreAuthorize("#ownerUsername == authentication.name")
     @DeleteMapping("/user/{ownerUsername}")
     public ResponseEntity<Void> deleteAllByUser(@PathVariable String ownerUsername) {
         taskService.deleteAllByUsername(ownerUsername);

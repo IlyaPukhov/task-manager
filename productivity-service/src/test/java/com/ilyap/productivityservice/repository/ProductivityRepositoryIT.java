@@ -5,8 +5,8 @@ import com.ilyap.productivityservice.model.entity.ActivityType;
 import com.ilyap.productivityservice.model.entity.Productivity;
 import com.ilyap.productivityservice.model.entity.ProductivityStatus;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
@@ -15,25 +15,21 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DataMongoTest
 @RequiredArgsConstructor
 class ProductivityRepositoryIT extends IntegrationTestBase {
 
     private final ProductivityRepository productivityRepository;
 
-    private static Productivity expectedProductivity;
+    private static final Map<ActivityType, Boolean> CHECKLIST = Map.of(
+            ActivityType.EXERCISE, true,
+            ActivityType.FAMILY_TIME, false,
+            ActivityType.WORK, true
+    );
 
-    @BeforeAll
-    static void setUp() {
-        var checklist = Map.of(
-                ActivityType.EXERCISE, true,
-                ActivityType.FAMILY_TIME, false,
-                ActivityType.WORK, true
-        );
-
-        expectedProductivity = new Productivity(UUID.fromString("e7a1ff78-d6f1-4f77-bd3b-4e8b0b85af0f"),
-                "norris", LocalDate.of(2024, 8, 26), 8, ProductivityStatus.GOOD,
-                checklist, "Highly productive day, all activities were completed.");
-    }
+    private static final Productivity EXPECTED_PRODUCTIVITY = new Productivity(UUID.fromString("e7a1ff78-d6f1-4f77-bd3b-4e8b0b85af0f"),
+            "norris", LocalDate.of(2024, 8, 26), 8, ProductivityStatus.GOOD,
+            CHECKLIST, "Highly productive day, all activities were completed.");
 
     @Test
     void findAllByUsername_validIntervalOrder_returnsProductivityFlux() {
@@ -45,7 +41,7 @@ class ProductivityRepositoryIT extends IntegrationTestBase {
 
         StepVerifier.create(productivityFlux.collectList())
                 .assertNext(productivities ->
-                        assertThat(productivities).containsOnly(expectedProductivity)
+                        assertThat(productivities).containsOnly(EXPECTED_PRODUCTIVITY)
                 ).verifyComplete();
     }
 
@@ -70,7 +66,7 @@ class ProductivityRepositoryIT extends IntegrationTestBase {
 
         StepVerifier.create(productivityFlux.collectList())
                 .assertNext(productivities ->
-                        assertThat(productivities).containsOnly(expectedProductivity)
+                        assertThat(productivities).containsOnly(EXPECTED_PRODUCTIVITY)
                 ).verifyComplete();
     }
 

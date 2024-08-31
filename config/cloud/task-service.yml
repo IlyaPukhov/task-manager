@@ -1,6 +1,8 @@
 server:
   port: 8082
 spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
   datasource:
     url: jdbc:postgresql://${TASK_SERVICE_DB_HOST:localhost:5434}/${TASK_SERVICE_DB}
     username: ${TASK_SERVICE_USER}

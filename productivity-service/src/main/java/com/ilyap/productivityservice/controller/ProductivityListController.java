@@ -5,8 +5,9 @@ import com.ilyap.productivityservice.model.dto.ProductivityReadDto;
 import com.ilyap.productivityservice.service.ProductivityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
@@ -30,7 +32,7 @@ public class ProductivityListController {
 
     private final ProductivityService productivityService;
 
-    @PostMapping("/create")
+    @PostMapping
     public Mono<ResponseEntity<ProductivityReadDto>> create(@Validated @RequestBody Mono<ProductivityCreateUpdateDto> createUpdateDto,
                                                             ServerWebExchange exchange) {
         return createUpdateDto
@@ -49,10 +51,17 @@ public class ProductivityListController {
         return productivityService.findByUsername(username, dayOfMonth);
     }
 
-    @PreAuthorize("#username == principal.username")
     @DeleteMapping("/user/{username}")
-    public Mono<ResponseEntity<Void>> deleteAllByUser(@PathVariable String username) {
-        return productivityService.deleteAllByUsername(username)
-                .then(Mono.just(ResponseEntity.noContent().build()));
+    public Mono<ResponseEntity<Void>> deleteAllByUser(@PathVariable String username,
+                                                      JwtAuthenticationToken authentication) {
+        return Mono.just(authentication.getName())
+                .flatMap(authenticatedUsername -> {
+                    if (authenticatedUsername.equals(username)) {
+                        return productivityService.deleteAllByUsername(username)
+                                .then(Mono.just(ResponseEntity.noContent().build()));
+                    } else {
+                        return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized"));
+                    }
+                });
     }
 }

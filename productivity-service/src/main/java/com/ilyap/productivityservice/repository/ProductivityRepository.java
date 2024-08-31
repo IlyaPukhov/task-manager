@@ -13,10 +13,10 @@ public interface ProductivityRepository extends ReactiveMongoRepository<Producti
 
     @Query("""
             {
-                'username': :#{#username},
-                'date': {
-                    $gte: :#{#startOfMonth},
-                    $lte: :#{#endOfMonth}
+                "username" : :#{#username},
+                "date" : {
+                    "$gte" : :#{#startOfMonth},
+                    "$lte" : :#{#endOfMonth}
                 }
             }
             """)
