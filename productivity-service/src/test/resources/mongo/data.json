@@ -4,7 +4,7 @@
     "username": "norris",
     "date": "2024-08-26",
     "mood": 8,
-    "productivityStatus": "GOOD",
+    "productivity_status": "GOOD",
     "checklist": {
       "EXERCISE": true,
       "FAMILY_TIME": false,
@@ -17,7 +17,7 @@
     "username": "brucelee",
     "date": "2024-08-25",
     "mood": 5,
-    "productivityStatus": "EXCELLENT",
+    "productivity_status": "EXCELLENT",
     "checklist": {
       "EXERCISE": false,
       "FAMILY_TIME": true,
@@ -30,7 +30,7 @@
     "username": "stallone",
     "date": "2024-08-24",
     "mood": 7,
-    "productivityStatus": "FAIR",
+    "productivity_status": "FAIR",
     "checklist": {
       "EXERCISE": true,
       "HOBBY": true,

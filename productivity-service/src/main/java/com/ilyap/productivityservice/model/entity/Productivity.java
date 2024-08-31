@@ -1,6 +1,7 @@
 package com.ilyap.productivityservice.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
@@ -42,6 +43,7 @@ public class Productivity extends AuditingEntity implements Serializable {
 
     private Integer mood;
 
+    @JsonProperty("productivity_status")
     private ProductivityStatus productivityStatus;
 
     private Map<ActivityType, Boolean> checklist;

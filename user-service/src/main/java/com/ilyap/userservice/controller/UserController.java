@@ -30,7 +30,7 @@ public class UserController implements UserControllerApi {
         return userService.findByUsername(username);
     }
 
-    @PreAuthorize("#userCreateUpdateDto.username == principal.username")
+    @PreAuthorize("#userCreateUpdateDto.username == authentication.name")
     @PutMapping
     public ResponseEntity<?> update(@Validated @RequestBody UserCreateUpdateDto userCreateUpdateDto,
                                     BindingResult bindingResult) throws BindException {
@@ -41,7 +41,7 @@ public class UserController implements UserControllerApi {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @PreAuthorize("#username == principal.username")
+    @PreAuthorize("#username == authentication.name")
     @DeleteMapping
     public ResponseEntity<Void> delete(@PathVariable String username) {
         userService.delete(username);

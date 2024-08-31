@@ -24,13 +24,13 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#taskId, principal.username)")
+    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#taskId, authentication.name)")
     @GetMapping
     public TaskReadDto findById(@PathVariable Long taskId) {
         return taskService.findTaskById(taskId);
     }
 
-    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#taskId, principal.username)")
+    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#taskId, authentication.name)")
     @PutMapping
     public ResponseEntity<?> update(@PathVariable Long taskId,
                                     @Validated @RequestBody TaskCreateUpdateDto taskCreateUpdateDto,
@@ -42,7 +42,7 @@ public class TaskController {
         return ResponseEntity.ok(updatedTask);
     }
 
-    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#taskId, principal.username)")
+    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#taskId, authentication.name)")
     @DeleteMapping
     public ResponseEntity<Void> delete(@PathVariable Long taskId) {
         taskService.delete(taskId);

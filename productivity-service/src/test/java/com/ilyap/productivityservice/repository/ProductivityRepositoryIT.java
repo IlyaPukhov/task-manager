@@ -6,6 +6,7 @@ import com.ilyap.productivityservice.model.entity.Productivity;
 import com.ilyap.productivityservice.model.entity.ProductivityStatus;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DataMongoTest
 @RequiredArgsConstructor
 class ProductivityRepositoryIT extends IntegrationTestBase {
 
