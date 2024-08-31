@@ -216,6 +216,7 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.update(userCreateUpdateDto))
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining(username);
+   
         verify(userRepository, times(1)).findByUsername(any(String.class));
         verify(userRepository, never()).save(any());
         verifyNoMoreInteractions(userRepository);
