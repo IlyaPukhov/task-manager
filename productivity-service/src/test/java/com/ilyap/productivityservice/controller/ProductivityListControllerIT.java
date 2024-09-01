@@ -58,7 +58,7 @@ class ProductivityListControllerIT extends IntegrationTestBase {
                               "HOBBY": false
                             },
                             "notes": "Highly productive day, all activities were completed."
-                        }]""");
+                        }]""", true);
     }
 
     @Test

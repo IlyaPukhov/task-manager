@@ -53,16 +53,18 @@ class UsersControllerIT extends IntegrationTestBase {
                         status().isOk(),
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
                         content().json("""
-                                [{
-                                  "id": 1,
-                                  "username": "norris",
-                                  "firstname": "Chuck",
-                                  "lastname": "Norris",
-                                  "birthdate": "1940-01-01",
-                                  "email": "r5Q9v@example.com",
-                                  "biography": null,
-                                  "tasks_ids": []
-                                }]""")
+                                {
+                                  "content": [{
+                                      "id": 1,
+                                      "username": "norris",
+                                      "firstname": "Chuck",
+                                      "lastname": "Norris",
+                                      "birthdate": "1940-01-01",
+                                      "email": "r5Q9v@example.com",
+                                      "biography": null,
+                                      "tasks_ids": []
+                                  }]
+                                }""")
                 );
     }
 
@@ -112,7 +114,7 @@ class UsersControllerIT extends IntegrationTestBase {
                                   "email": "r5Q9v@example.com",
                                   "biography": null,
                                   "tasks_ids":[]
-                                }""")
+                                }""", true)
                 );
     }
 
@@ -182,7 +184,7 @@ class UsersControllerIT extends IntegrationTestBase {
                                   "email": "r5Q9v@example.com",
                                   "biography": null,
                                   "tasks_ids":[]
-                                }""")
+                                }""", true)
                 );
     }
 

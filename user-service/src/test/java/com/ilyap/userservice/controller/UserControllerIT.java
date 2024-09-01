@@ -61,7 +61,7 @@ class UserControllerIT extends IntegrationTestBase {
                                   "email": "r5Q9v@example.com",
                                   "biography": null,
                                   "tasks_ids":[]
-                                }""")
+                                }""", true)
                 );
     }
 
@@ -106,7 +106,7 @@ class UserControllerIT extends IntegrationTestBase {
                                   "email": "r5Q9v@example.com",
                                   "biography": null,
                                   "tasks_ids":[]
-                                }""")
+                                }""", true)
                 );
     }
 
