@@ -10,13 +10,11 @@ import com.ilyap.productivityservice.model.dto.ProductivityCreateUpdateDto;
 import com.ilyap.productivityservice.model.dto.ProductivityReadDto;
 import com.ilyap.productivityservice.repository.ProductivityRepository;
 import com.ilyap.productivityservice.service.ProductivityService;
-import com.mongodb.DuplicateKeyException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -38,10 +36,9 @@ public class ProductivityServiceImpl implements ProductivityService {
                 .switchIfEmpty(
                         productivityRepository.findById(id)
                                 .map(readMapper::toDto)
-                                .publishOn(Schedulers.boundedElastic())
                                 .flatMap(fetchedDto ->
                                         hazelcastCache.put(id, fetchedDto)
-                                                .then(Mono.just(fetchedDto))
+                                                .thenReturn(fetchedDto)
                                 )
                                 .switchIfEmpty(Mono.error(new ProductivityNotFoundException(id.toString())))
                 );
@@ -59,17 +56,18 @@ public class ProductivityServiceImpl implements ProductivityService {
     @Transactional
     @Override
     public Mono<ProductivityReadDto> create(ProductivityCreateUpdateDto productivityCreateUpdateDto) {
-        return Mono.just(productivityCreateUpdateDto)
-                .map(createUpdateMapper::toEntity)
-                .doOnNext(productivity -> productivity.setId(UUID.randomUUID()))
-                .flatMap(productivityRepository::save)
-                .onErrorResume(DuplicateKeyException.class, e -> Mono.error(() ->
-                        new ProductivityAlreadyExistsException("A productivity entry with the same username and date already exists.")
-                ))
-                .map(readMapper::toDto)
-                .flatMap(fetchedDto ->
-                        hazelcastCache.put(UUID.fromString(fetchedDto.getId()), fetchedDto)
-                                .then(Mono.just(fetchedDto))
+        return productivityRepository.findByUsernameAndDate(productivityCreateUpdateDto.getUsername(), productivityCreateUpdateDto.getDate())
+                .flatMap(existingProductivity ->
+                        Mono.<ProductivityReadDto>error(new ProductivityAlreadyExistsException("A productivity entry with the same date already exists."))
+                ).switchIfEmpty(Mono.just(productivityCreateUpdateDto)
+                        .map(createUpdateMapper::toEntity)
+                        .doOnNext(productivity -> productivity.setId(UUID.randomUUID()))
+                        .flatMap(productivityRepository::save)
+                        .map(readMapper::toDto)
+                        .flatMap(fetchedDto ->
+                                hazelcastCache.put(UUID.fromString(fetchedDto.getId()), fetchedDto)
+                                        .thenReturn(fetchedDto)
+                        )
                 );
     }
 
@@ -77,14 +75,13 @@ public class ProductivityServiceImpl implements ProductivityService {
     @Override
     public Mono<ProductivityReadDto> update(UUID id, ProductivityCreateUpdateDto productivityCreateUpdateDto) {
         return productivityRepository.findById(id)
-                .map(productivity -> createUpdateMapper.toEntity(productivityCreateUpdateDto, productivity))
-                .flatMap(productivityRepository::save)
-                .map(readMapper::toDto)
-                .flatMap(updatedDto ->
-                        hazelcastCache.put(id, updatedDto)
-                                .then(Mono.just(updatedDto))
-                )
-                .switchIfEmpty(Mono.error(new ProductivityNotFoundException(id.toString())));
+                .switchIfEmpty(Mono.error(new ProductivityNotFoundException(id.toString())))
+                .flatMap(existingProductivity -> {
+                    createUpdateMapper.toEntity(productivityCreateUpdateDto, existingProductivity);
+                    return productivityRepository.save(existingProductivity)
+                            .map(readMapper::toDto)
+                            .flatMap(updatedDto -> hazelcastCache.put(id, updatedDto).thenReturn(updatedDto));
+                });
     }
 
     @Transactional

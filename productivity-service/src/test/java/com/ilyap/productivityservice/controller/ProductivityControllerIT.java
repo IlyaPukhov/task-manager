@@ -184,7 +184,7 @@ class ProductivityControllerIT extends IntegrationTestBase {
     }
 
     @Test
-    void delete_userIsNotOwner_returnsForbidden() {
+    void deleteProductivity_userIsNotOwner_returnsForbidden() {
         webTestClient.mutateWith(mockJwt().jwt(builder -> builder.subject("noNorris")))
                 .delete()
                 .uri("/api/v1/productivity/{productivityId}", EXISTING_UUID)

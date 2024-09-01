@@ -41,16 +41,20 @@ public class ProductivityListController {
     }
 
     @PostMapping
-    public Mono<ResponseEntity<ProductivityReadDto>> create(@Validated @RequestBody Mono<ProductivityCreateUpdateDto> createUpdateDto,
+    public Mono<ResponseEntity<ProductivityReadDto>> create(@Validated @RequestBody ProductivityCreateUpdateDto createUpdateDto,
+                                                            JwtAuthenticationToken authentication,
                                                             ServerWebExchange exchange) {
-        return createUpdateDto
-                .flatMap(productivityService::create)
-                .map(productivity -> ResponseEntity
-                        .created(UriComponentsBuilder.fromUri(exchange.getRequest().getURI())
-                                .path("/{productivityId}")
-                                .build(productivity.getId()))
-                        .body(productivity));
+        return Mono.justOrEmpty(authentication.getName())
+                .filter(username -> username.equals(createUpdateDto.getUsername()))
+                .flatMap(username -> productivityService.create(createUpdateDto)
+                        .map(productivity -> ResponseEntity
+                                .created(UriComponentsBuilder.fromUri(exchange.getRequest().getURI())
+                                        .path("/{productivityId}")
+                                        .build(productivity.getId()))
+                                .body(productivity)))
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN)));
     }
+
 
     @DeleteMapping("/user/{username}")
     public Mono<ResponseEntity<?>> deleteAllByUser(@PathVariable String username,
@@ -58,7 +62,7 @@ public class ProductivityListController {
         return Mono.just(authentication.getName())
                 .flatMap(authenticatedUsername -> authenticatedUsername.equals(username)
                         ? productivityService.deleteAllByUsername(username)
-                                .then(Mono.just(ResponseEntity.noContent().build()))
+                        .then(Mono.just(ResponseEntity.noContent().build()))
                         : Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN))
                 );
     }

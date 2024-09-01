@@ -104,7 +104,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Creates an exising user.
+     * Updates an exising user.
      *
      * @param userCreateUpdateDto the {@link UserCreateUpdateDto} to update the user from
      * @return {@link UserReadDto} of the updated user
