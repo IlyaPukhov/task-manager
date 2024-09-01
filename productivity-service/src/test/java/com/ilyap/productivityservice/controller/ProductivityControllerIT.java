@@ -1,7 +1,7 @@
 package com.ilyap.productivityservice.controller;
 
 import com.ilyap.productivityservice.IntegrationTestBase;
-import com.ilyap.productivityservice.annotation.ControllerIT;
+import com.ilyap.productivityservice.annotation.WebFluxControllerIT;
 import com.ilyap.productivityservice.cache.HazelcastReactiveCache;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
@@ -13,7 +13,7 @@ import java.util.UUID;
 
 import static org.springframework.security.test.web.reactive.server.SecurityMockServerConfigurers.mockJwt;
 
-@ControllerIT
+@WebFluxControllerIT
 @RequiredArgsConstructor
 class ProductivityControllerIT extends IntegrationTestBase {
 

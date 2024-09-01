@@ -1,13 +1,13 @@
 package com.ilyap.productivityservice.controller;
 
 import com.ilyap.productivityservice.IntegrationTestBase;
-import com.ilyap.productivityservice.annotation.ControllerIT;
+import com.ilyap.productivityservice.annotation.WebFluxControllerIT;
 import com.ilyap.productivityservice.cache.HazelcastReactiveCache;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
-@ControllerIT
+@WebFluxControllerIT
 @RequiredArgsConstructor
 class ProductivityListControllerIT extends IntegrationTestBase {
 

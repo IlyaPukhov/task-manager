@@ -12,5 +12,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @AutoConfigureWebTestClient
 @SpringBootTest
-public @interface ControllerIT {
+public @interface WebFluxControllerIT {
 }
