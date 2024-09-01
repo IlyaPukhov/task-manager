@@ -2,7 +2,6 @@ package com.ilyap.productivityservice;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ilyap.productivityservice.cache.HazelcastReactiveCache;
 import com.ilyap.productivityservice.model.entity.Productivity;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
@@ -23,14 +22,11 @@ public class IntegrationTestBase {
     @Autowired
     private ReactiveMongoTemplate mongoTemplate;
 
-    @Autowired
-    private HazelcastReactiveCache hazelcastCache;
-
     private static final MongoDBContainer container = new MongoDBContainer("mongo:8.0.0-rc13");
 
     @BeforeEach
     @SneakyThrows
-    void setUpData() {
+    void setUpMongo() {
         InputStream inputStream = new ClassPathResource("mongo/data.json").getInputStream();
         List<Productivity> documents = new ObjectMapper().readValue(inputStream, new TypeReference<>() {});
 
@@ -38,9 +34,8 @@ public class IntegrationTestBase {
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDownMongo() {
         mongoTemplate.dropCollection(Productivity.class).block();
-        hazelcastCache.evictAll().block();
     }
 
     @BeforeAll

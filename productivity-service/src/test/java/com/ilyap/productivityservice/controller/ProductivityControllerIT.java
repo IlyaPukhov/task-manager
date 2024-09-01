@@ -2,7 +2,9 @@ package com.ilyap.productivityservice.controller;
 
 import com.ilyap.productivityservice.IntegrationTestBase;
 import com.ilyap.productivityservice.annotation.ControllerIT;
+import com.ilyap.productivityservice.cache.HazelcastReactiveCache;
 import lombok.RequiredArgsConstructor;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -16,6 +18,7 @@ import static org.springframework.security.test.web.reactive.server.SecurityMock
 class ProductivityControllerIT extends IntegrationTestBase {
 
     private final WebTestClient webTestClient;
+    private final HazelcastReactiveCache hazelcastCache;
 
     private static final UUID EXISTING_UUID = UUID.fromString("e7a1ff78-d6f1-4f77-bd3b-4e8b0b85af0f");
     private static final UUID NONEXISTED_UUID = UUID.fromString("123e4567-e89b-12d3-a456-426655440000");
@@ -33,6 +36,11 @@ class ProductivityControllerIT extends IntegrationTestBase {
                 },
                 "notes": "..."
             }""";
+
+    @AfterEach
+    void tearDown() {
+        hazelcastCache.evictAll().block();
+    }
 
     @Test
     void findById_productivityExists_returnsProductivityResponse() {
