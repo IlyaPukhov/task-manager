@@ -22,7 +22,7 @@ public class IntegrationTestBase {
     @Autowired
     private ReactiveMongoTemplate mongoTemplate;
 
-    private static final MongoDBContainer container = new MongoDBContainer("mongo:8.0.0-rc13");
+    private static final MongoDBContainer MONGO_CONTAINER = new MongoDBContainer("mongo:8.0.0-rc13");
 
     @BeforeEach
     @SneakyThrows
@@ -40,11 +40,11 @@ public class IntegrationTestBase {
 
     @BeforeAll
     static void runContainer() {
-        container.start();
+        MONGO_CONTAINER.start();
     }
 
     @DynamicPropertySource
     static void mongoProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", container::getReplicaSetUrl);
+        registry.add("spring.data.mongodb.uri", MONGO_CONTAINER::getReplicaSetUrl);
     }
 }

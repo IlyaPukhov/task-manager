@@ -20,8 +20,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-@Service
 @Logged
+@Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 

@@ -1,0 +1,9 @@
+spring:
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  cloud:
+    config:
+      enabled: false
+eureka:
+  client:
+    enabled: false

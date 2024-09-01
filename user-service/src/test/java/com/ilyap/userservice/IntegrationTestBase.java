@@ -13,15 +13,15 @@ import org.testcontainers.containers.PostgreSQLContainer;
 @WithMockUser(username = "test@gmail.com", password = "test", authorities = {"ADMIN", "USER"})
 public class IntegrationTestBase {
 
-    private static final PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:16");
+    private static final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:16");
 
     @BeforeAll
     static void runContainer() {
-        container.start();
+        POSTGRESQL_CONTAINER.start();
     }
 
     @DynamicPropertySource
     static void postgresProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", container::getJdbcUrl);
+        registry.add("spring.datasource.url", POSTGRESQL_CONTAINER::getJdbcUrl);
     }
 }
