@@ -13,11 +13,11 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductivityReadDto {
-    String id;
-    String username;
-    LocalDate date;
-    Integer mood;
-    ProductivityStatus productivityStatus;
-    Map<ActivityType, Boolean> checklist;
-    String notes;
+    private String id;
+    private String username;
+    private LocalDate date;
+    private Integer mood;
+    private ProductivityStatus productivityStatus;
+    private Map<ActivityType, Boolean> checklist;
+    private String notes;
 }

@@ -3,6 +3,7 @@ package com.ilyap.productivityservice.controller;
 import com.ilyap.productivityservice.model.dto.ProductivityCreateUpdateDto;
 import com.ilyap.productivityservice.model.dto.ProductivityReadDto;
 import com.ilyap.productivityservice.service.ProductivityService;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,13 @@ public class ProductivityListController {
 
     private final ProductivityService productivityService;
 
+    @GetMapping("/user/{username}")
+    public Flux<ProductivityReadDto> findAllByUser(@PathVariable String username,
+                                                   @Validated @RequestParam("day_of_month")
+                                                   @PastOrPresent @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayOfMonth) {
+        return productivityService.findByUsername(username, dayOfMonth);
+    }
+
     @PostMapping
     public Mono<ResponseEntity<ProductivityReadDto>> create(@Validated @RequestBody Mono<ProductivityCreateUpdateDto> createUpdateDto,
                                                             ServerWebExchange exchange) {
@@ -44,16 +52,9 @@ public class ProductivityListController {
                         .body(productivity));
     }
 
-    @GetMapping("/user/{username}")
-    public Flux<ProductivityReadDto> findAllByUser(@PathVariable String username,
-                                                   @Validated @RequestParam
-                                                   @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayOfMonth) {
-        return productivityService.findByUsername(username, dayOfMonth);
-    }
-
     @DeleteMapping("/user/{username}")
     public Mono<ResponseEntity<?>> deleteAllByUser(@PathVariable String username,
-                                                      JwtAuthenticationToken authentication) {
+                                                   JwtAuthenticationToken authentication) {
         return Mono.just(authentication.getName())
                 .flatMap(authenticatedUsername -> authenticatedUsername.equals(username)
                         ? productivityService.deleteAllByUsername(username)

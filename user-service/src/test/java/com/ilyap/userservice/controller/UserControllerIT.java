@@ -61,8 +61,7 @@ class UserControllerIT extends IntegrationTestBase {
                                   "email": "r5Q9v@example.com",
                                   "biography": null,
                                   "tasks_ids":[]
-                                }
-                                """)
+                                }""")
                 );
     }
 
@@ -87,8 +86,7 @@ class UserControllerIT extends IntegrationTestBase {
                     "birthdate": "1940-01-01",
                     "email": "r5Q9v@example.com",
                     "biography": null
-                }
-                """;
+                }""";
 
         mockMvc.perform(put("/api/v1/users/{username}", EXISTING_USERNAME)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -108,8 +106,7 @@ class UserControllerIT extends IntegrationTestBase {
                                   "email": "r5Q9v@example.com",
                                   "biography": null,
                                   "tasks_ids":[]
-                                }
-                                """)
+                                }""")
                 );
     }
 
@@ -123,8 +120,7 @@ class UserControllerIT extends IntegrationTestBase {
                     "birthdate": "1940-01-01",
                     "email": "r5Q9v@example.com",
                     "biography": null
-                }
-                """;
+                }""";
 
         mockMvc.perform(put("/api/v1/users/{username}", NONEXISTENT_USERNAME)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -156,8 +152,7 @@ class UserControllerIT extends IntegrationTestBase {
                     "lastname": "Norris",
                     "birthdate": "1940-01-01",
                     "email": "invalid-email"
-                }
-                """;
+                }""";
 
         mockMvc.perform(put("/api/v1/users/{username}", EXISTING_USERNAME)
                         .contentType(MediaType.APPLICATION_JSON)

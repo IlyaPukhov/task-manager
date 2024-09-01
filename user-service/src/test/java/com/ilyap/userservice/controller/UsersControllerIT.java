@@ -15,8 +15,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -54,15 +52,17 @@ class UsersControllerIT extends IntegrationTestBase {
                 .andExpectAll(
                         status().isOk(),
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
-                        jsonPath("$.content", hasSize(1)),
-                        jsonPath("$.content[0].id").value(1),
-                        jsonPath("$.content[0].username").value("norris"),
-                        jsonPath("$.content[0].firstname").value("Chuck"),
-                        jsonPath("$.content[0].lastname").value("Norris"),
-                        jsonPath("$.content[0].birthdate").value("1940-01-01"),
-                        jsonPath("$.content[0].email").value("r5Q9v@example.com"),
-                        jsonPath("$.content[0].biography").value(nullValue()),
-                        jsonPath("$.content[0].tasks_ids", hasSize(0))
+                        content().json("""
+                                [{
+                                  "id": 1,
+                                  "username": "norris",
+                                  "firstname": "Chuck",
+                                  "lastname": "Norris",
+                                  "birthdate": "1940-01-01",
+                                  "email": "r5Q9v@example.com",
+                                  "biography": null,
+                                  "tasks_ids": []
+                                }]""")
                 );
     }
 
@@ -78,7 +78,7 @@ class UsersControllerIT extends IntegrationTestBase {
                 .andExpectAll(
                         status().isOk(),
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
-                        jsonPath("$.content", hasSize(0))
+                        jsonPath("$.content.length()").value(0)
                 );
     }
 
@@ -92,8 +92,7 @@ class UsersControllerIT extends IntegrationTestBase {
                     "birthdate": "1940-01-01",
                     "email": "r5Q9v@example.com",
                     "biography": null
-                }
-                """;
+                }""";
 
         mockMvc.perform(post("/api/v1/users/registration")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -113,8 +112,7 @@ class UsersControllerIT extends IntegrationTestBase {
                                   "email": "r5Q9v@example.com",
                                   "biography": null,
                                   "tasks_ids":[]
-                                }
-                                """)
+                                }""")
                 );
     }
 
@@ -128,8 +126,7 @@ class UsersControllerIT extends IntegrationTestBase {
                     "birthdate": "1940-01-01",
                     "email": "r5Q9v@example.com",
                     "biography": null
-                }
-                """;
+                }""";
 
         mockMvc.perform(post("/api/v1/users/registration")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -151,8 +148,7 @@ class UsersControllerIT extends IntegrationTestBase {
                     "lastname": "Norris",
                     "birthdate": "1940-01-01",
                     "email": "invalid-email"
-                }
-                """;
+                }""";
 
         mockMvc.perform(post("/api/v1/users/registration")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -186,8 +182,7 @@ class UsersControllerIT extends IntegrationTestBase {
                                   "email": "r5Q9v@example.com",
                                   "biography": null,
                                   "tasks_ids":[]
-                                }
-                                """)
+                                }""")
                 );
     }
 
