@@ -44,7 +44,7 @@ public class TaskController {
 
     @PreAuthorize("@taskPermissionHandler.isTaskOwner(#taskId, authentication.name)")
     @DeleteMapping
-    public ResponseEntity<Void> delete(@PathVariable Long taskId) {
+    public ResponseEntity<?> delete(@PathVariable Long taskId) {
         taskService.delete(taskId);
         return ResponseEntity.noContent()
                 .build();

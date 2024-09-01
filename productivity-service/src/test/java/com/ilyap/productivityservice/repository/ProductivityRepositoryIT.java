@@ -82,6 +82,18 @@ class ProductivityRepositoryIT extends IntegrationTestBase {
     }
 
     @Test
+    void findByUsernameAndDate_returnsProductivityMono() {
+        var username = "norris";
+        var date = LocalDate.of(2024, 8, 26);
+
+        var productivityMono = productivityRepository.findByUsernameAndDate(username, date);
+
+        StepVerifier.create(productivityMono)
+                .expectNext(EXPECTED_PRODUCTIVITY)
+                .verifyComplete();
+    }
+
+    @Test
     void deleteAllByUsername_successDeleted() {
         var username = "norris";
 

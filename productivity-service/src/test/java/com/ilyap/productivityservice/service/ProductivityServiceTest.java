@@ -11,7 +11,6 @@ import com.ilyap.productivityservice.model.entity.Productivity;
 import com.ilyap.productivityservice.model.entity.ProductivityStatus;
 import com.ilyap.productivityservice.repository.ProductivityRepository;
 import com.ilyap.productivityservice.service.impl.ProductivityServiceImpl;
-import com.mongodb.DuplicateKeyException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
@@ -31,7 +30,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -127,6 +125,7 @@ class ProductivityServiceTest {
         var productivityCreateUpdateDto = new ProductivityCreateUpdateDto("norris", LocalDate.EPOCH, 8,
                 ProductivityStatus.FAIL.toString(), null, "notes");
         doReturn(Mono.empty()).when(hazelcastCache).put(any(UUID.class), any(ProductivityReadDto.class));
+        doReturn(Mono.empty()).when(productivityRepository).findByUsernameAndDate(any(String.class), any(LocalDate.class));
         doAnswer(invocation -> Mono.justOrEmpty(invocation.getArguments()[0]))
                 .when(productivityRepository).save(any());
 
@@ -146,6 +145,7 @@ class ProductivityServiceTest {
                         && productivity.getProductivityStatus().equals(EXPECTED_PRODUCTIVITY.getProductivityStatus())
                         && productivity.getNotes().equals(EXPECTED_PRODUCTIVITY.getNotes()))
                 );
+        verify(productivityRepository, times(1)).findByUsernameAndDate(any(String.class), any(LocalDate.class));
         verifyNoMoreInteractions(productivityRepository);
         verify(hazelcastCache, times(1)).put(any(UUID.class), any());
     }
@@ -153,15 +153,15 @@ class ProductivityServiceTest {
     @Test
     void create_productivityAlreadyExists_throwsException() {
         var productivityCreateUpdateDto = new ProductivityCreateUpdateDto();
-        doThrow(DuplicateKeyException.class).when(productivityRepository).save(any());
+        doReturn(Mono.just(new Productivity())).when(productivityRepository).findByUsernameAndDate(any(), any());
 
         StepVerifier.create(productivityService.create(productivityCreateUpdateDto))
                 .expectErrorMatches(throwable ->
                         throwable instanceof ProductivityAlreadyExistsException &&
-                        throwable.getMessage().equals("A productivity entry with the same username and date already exists."))
+                        throwable.getMessage().equals("A productivity entry with the same date already exists."))
                 .verify();
 
-        verify(productivityRepository, times(1)).save(any());
+        verify(productivityRepository, times(1)).findByUsernameAndDate(any(), any());
         verifyNoMoreInteractions(productivityRepository);
         verify(hazelcastCache, never()).put(any(UUID.class), any());
     }
@@ -231,6 +231,7 @@ class ProductivityServiceTest {
     void deleteAllByUsername_deletesProductivities() {
         var username = EXPECTED_PRODUCTIVITY.getUsername();
         doReturn(Mono.empty()).when(productivityRepository).deleteAllByUsername(any(String.class));
+        doReturn(Mono.empty()).when(hazelcastCache).evictAll();
 
         StepVerifier.create(productivityService.deleteAllByUsername(username))
                 .verifyComplete();

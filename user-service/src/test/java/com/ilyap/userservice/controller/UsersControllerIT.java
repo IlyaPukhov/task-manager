@@ -1,14 +1,13 @@
 package com.ilyap.userservice.controller;
 
 import com.ilyap.userservice.IntegrationTestBase;
+import com.ilyap.userservice.annotation.MvcControllerIT;
 import com.ilyap.userservice.client.TaskServiceClient;
 import com.ilyap.userservice.model.dto.PageResponse;
 import com.ilyap.userservice.model.dto.TaskResponse;
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -16,8 +15,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,8 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@MvcControllerIT
 @RequiredArgsConstructor
 class UsersControllerIT extends IntegrationTestBase {
 
@@ -56,15 +52,19 @@ class UsersControllerIT extends IntegrationTestBase {
                 .andExpectAll(
                         status().isOk(),
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
-                        jsonPath("$.content", hasSize(1)),
-                        jsonPath("$.content[0].id").value(1),
-                        jsonPath("$.content[0].username").value("norris"),
-                        jsonPath("$.content[0].firstname").value("Chuck"),
-                        jsonPath("$.content[0].lastname").value("Norris"),
-                        jsonPath("$.content[0].birthdate").value("1940-01-01"),
-                        jsonPath("$.content[0].email").value("r5Q9v@example.com"),
-                        jsonPath("$.content[0].biography").value(nullValue()),
-                        jsonPath("$.content[0].tasks_ids", hasSize(0))
+                        content().json("""
+                                {
+                                  "content": [{
+                                      "id": 1,
+                                      "username": "norris",
+                                      "firstname": "Chuck",
+                                      "lastname": "Norris",
+                                      "birthdate": "1940-01-01",
+                                      "email": "r5Q9v@example.com",
+                                      "biography": null,
+                                      "tasks_ids": []
+                                  }]
+                                }""")
                 );
     }
 
@@ -80,7 +80,7 @@ class UsersControllerIT extends IntegrationTestBase {
                 .andExpectAll(
                         status().isOk(),
                         content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON),
-                        jsonPath("$.content", hasSize(0))
+                        jsonPath("$.content.length()").value(0)
                 );
     }
 
@@ -94,8 +94,7 @@ class UsersControllerIT extends IntegrationTestBase {
                     "birthdate": "1940-01-01",
                     "email": "r5Q9v@example.com",
                     "biography": null
-                }
-                """;
+                }""";
 
         mockMvc.perform(post("/api/v1/users/registration")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -115,8 +114,7 @@ class UsersControllerIT extends IntegrationTestBase {
                                   "email": "r5Q9v@example.com",
                                   "biography": null,
                                   "tasks_ids":[]
-                                }
-                                """)
+                                }""", true)
                 );
     }
 
@@ -130,8 +128,7 @@ class UsersControllerIT extends IntegrationTestBase {
                     "birthdate": "1940-01-01",
                     "email": "r5Q9v@example.com",
                     "biography": null
-                }
-                """;
+                }""";
 
         mockMvc.perform(post("/api/v1/users/registration")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -153,8 +150,7 @@ class UsersControllerIT extends IntegrationTestBase {
                     "lastname": "Norris",
                     "birthdate": "1940-01-01",
                     "email": "invalid-email"
-                }
-                """;
+                }""";
 
         mockMvc.perform(post("/api/v1/users/registration")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -188,8 +184,7 @@ class UsersControllerIT extends IntegrationTestBase {
                                   "email": "r5Q9v@example.com",
                                   "biography": null,
                                   "tasks_ids":[]
-                                }
-                                """)
+                                }""", true)
                 );
     }
 

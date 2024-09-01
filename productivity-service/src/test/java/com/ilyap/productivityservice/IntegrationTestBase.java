@@ -10,7 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.MongoDBContainer;
@@ -18,7 +17,6 @@ import org.testcontainers.containers.MongoDBContainer;
 import java.io.InputStream;
 import java.util.List;
 
-@WithMockUser(username = "test@gmail.com", password = "test", authorities = {"ADMIN", "USER"})
 public class IntegrationTestBase {
 
     @Autowired
@@ -28,7 +26,7 @@ public class IntegrationTestBase {
 
     @BeforeEach
     @SneakyThrows
-    void setUpData() {
+    void setUpMongo() {
         InputStream inputStream = new ClassPathResource("mongo/data.json").getInputStream();
         List<Productivity> documents = new ObjectMapper().readValue(inputStream, new TypeReference<>() {});
 
@@ -36,7 +34,7 @@ public class IntegrationTestBase {
     }
 
     @AfterEach
-    void tearDown() {
+    void tearDownMongo() {
         mongoTemplate.dropCollection(Productivity.class).block();
     }
 

@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.Range;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -30,7 +31,7 @@ public class ProductivityCreateUpdateDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
 
-    @Size(min = 1, max = 10)
+    @Range(min = 1, max = 10)
     private Integer mood;
 
     @ValueOfEnum(ProductivityStatus.class)

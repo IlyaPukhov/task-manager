@@ -45,7 +45,6 @@ public class UserServiceImpl implements UserService {
      * @param pageable the {@link Pageable} object to paginate the results
      * @return {@link Page} of {@link UserReadDto UserReadDtos}
      */
-    @Cacheable(key = "'all-users'", condition = "#pageable.pageNumber == 0")
     @Override
     public Page<UserReadDto> findAll(Pageable pageable) {
         return userRepository.findAll(pageable)
@@ -105,7 +104,7 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * Creates an exising user.
+     * Updates an exising user.
      *
      * @param userCreateUpdateDto the {@link UserCreateUpdateDto} to update the user from
      * @return {@link UserReadDto} of the updated user

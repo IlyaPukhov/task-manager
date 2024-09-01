@@ -3,6 +3,7 @@ package com.ilyap.productivityservice.controller;
 import com.ilyap.productivityservice.model.dto.ProductivityCreateUpdateDto;
 import com.ilyap.productivityservice.model.dto.ProductivityReadDto;
 import com.ilyap.productivityservice.service.ProductivityService;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -32,36 +33,37 @@ public class ProductivityListController {
 
     private final ProductivityService productivityService;
 
-    @PostMapping
-    public Mono<ResponseEntity<ProductivityReadDto>> create(@Validated @RequestBody Mono<ProductivityCreateUpdateDto> createUpdateDto,
-                                                            ServerWebExchange exchange) {
-        return createUpdateDto
-                .flatMap(productivityService::create)
-                .map(productivity -> ResponseEntity
-                        .created(UriComponentsBuilder.fromUri(exchange.getRequest().getURI())
-                                .path("/{productivityId}")
-                                .build(productivity.getId()))
-                        .body(productivity));
-    }
-
     @GetMapping("/user/{username}")
     public Flux<ProductivityReadDto> findAllByUser(@PathVariable String username,
-                                                   @Validated @RequestParam
-                                                   @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayOfMonth) {
+                                                   @Validated @RequestParam("day_of_month")
+                                                   @PastOrPresent @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate dayOfMonth) {
         return productivityService.findByUsername(username, dayOfMonth);
     }
 
+    @PostMapping
+    public Mono<ResponseEntity<ProductivityReadDto>> create(@Validated @RequestBody ProductivityCreateUpdateDto createUpdateDto,
+                                                            JwtAuthenticationToken authentication,
+                                                            ServerWebExchange exchange) {
+        return Mono.justOrEmpty(authentication.getName())
+                .filter(username -> username.equals(createUpdateDto.getUsername()))
+                .flatMap(username -> productivityService.create(createUpdateDto)
+                        .map(productivity -> ResponseEntity
+                                .created(UriComponentsBuilder.fromUri(exchange.getRequest().getURI())
+                                        .path("/{productivityId}")
+                                        .build(productivity.getId()))
+                                .body(productivity)))
+                .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN)));
+    }
+
+
     @DeleteMapping("/user/{username}")
-    public Mono<ResponseEntity<Void>> deleteAllByUser(@PathVariable String username,
-                                                      JwtAuthenticationToken authentication) {
+    public Mono<ResponseEntity<?>> deleteAllByUser(@PathVariable String username,
+                                                   JwtAuthenticationToken authentication) {
         return Mono.just(authentication.getName())
-                .flatMap(authenticatedUsername -> {
-                    if (authenticatedUsername.equals(username)) {
-                        return productivityService.deleteAllByUsername(username)
-                                .then(Mono.just(ResponseEntity.noContent().build()));
-                    } else {
-                        return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized"));
-                    }
-                });
+                .flatMap(authenticatedUsername -> authenticatedUsername.equals(username)
+                        ? productivityService.deleteAllByUsername(username)
+                        .then(Mono.just(ResponseEntity.noContent().build()))
+                        : Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN))
+                );
     }
 }

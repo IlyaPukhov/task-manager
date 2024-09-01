@@ -22,51 +22,42 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/productivity")
+@RequestMapping("/api/v1/productivity/{productivityId}")
 @RequiredArgsConstructor
 public class ProductivityController {
 
     private final ProductivityService productivityService;
     private final ProductivityPermissionHandler productivityPermissionHandler;
 
-    @GetMapping("/{productivityId}")
+    @GetMapping
     public Mono<ProductivityReadDto> findById(@PathVariable UUID productivityId,
                                               JwtAuthenticationToken authentication) {
         return productivityPermissionHandler.isProductivityUser(productivityId, authentication.getName())
-                .flatMap(isAuthorized -> {
-                    if (isAuthorized) {
-                        return productivityService.findById(productivityId);
-                    } else {
-                        return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized"));
-                    }
-                });
+                .flatMap(isAuthorized -> isAuthorized
+                        ? productivityService.findById(productivityId)
+                        : Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN))
+                );
     }
 
-    @PutMapping("/{productivityId}")
+    @PutMapping
     public Mono<ProductivityReadDto> update(@PathVariable UUID productivityId,
                                             @Validated @RequestBody ProductivityCreateUpdateDto createUpdateDto,
                                             JwtAuthenticationToken authentication) {
         return productivityPermissionHandler.isProductivityUser(productivityId, authentication.getName())
-                .flatMap(isAuthorized -> {
-                    if (isAuthorized) {
-                        return productivityService.update(productivityId, createUpdateDto);
-                    } else {
-                        return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized"));
-                    }
-                });
+                .flatMap(isAuthorized -> isAuthorized
+                        ? productivityService.update(productivityId, createUpdateDto)
+                        : Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN))
+                );
     }
 
-    @DeleteMapping("/{productivityId}")
-    public Mono<ResponseEntity<Void>> delete(@PathVariable UUID productivityId,
-                                             JwtAuthenticationToken authentication) {
+    @DeleteMapping
+    public Mono<ResponseEntity<?>> delete(@PathVariable UUID productivityId,
+                                          JwtAuthenticationToken authentication) {
         return productivityPermissionHandler.isProductivityUser(productivityId, authentication.getName())
-                .flatMap(isAuthorized -> {
-                    if (isAuthorized) {
-                        return productivityService.delete(productivityId)
-                                .then(Mono.just(ResponseEntity.noContent().build()));
-                    } else {
-                        return Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN, "User is not authorized"));
-                    }
-                });
+                .flatMap(isAuthorized -> isAuthorized
+                        ? productivityService.delete(productivityId)
+                                    .then(Mono.just(ResponseEntity.noContent().build()))
+                        : Mono.error(new ResponseStatusException(HttpStatus.FORBIDDEN))
+                );
     }
 }
