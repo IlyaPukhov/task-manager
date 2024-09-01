@@ -106,7 +106,7 @@ class UserServiceTest {
 
         assertThatThrownBy(() -> userService.findOwnerByTaskId(taskId))
                 .isInstanceOf(UserNotFoundException.class)
-                .hasMessageContaining("User not found");
+                .hasMessage("User not found");
         verify(taskServiceClient).findTaskByTaskId(any(Long.class));
         verify(userRepository, times(1)).findByUsername(any(String.class));
         verifyNoMoreInteractions(userRepository);
