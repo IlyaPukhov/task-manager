@@ -1,0 +1,2 @@
+db-user-service:5432:postgres:postgres:null
+db-task-service:5432:postgres:postgres:null

@@ -1,5 +1,6 @@
 package com.ilyap.taskservice.service.impl;
 
+import com.ilyap.logging.annotation.Logged;
 import com.ilyap.taskservice.exception.TaskNotFoundException;
 import com.ilyap.taskservice.mapper.TaskCreateUpdateMapper;
 import com.ilyap.taskservice.mapper.TaskReadMapper;
@@ -8,16 +9,21 @@ import com.ilyap.taskservice.model.dto.TaskReadDto;
 import com.ilyap.taskservice.repository.TaskRepository;
 import com.ilyap.taskservice.service.TaskService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
+@Logged
 @RequiredArgsConstructor
+@CacheConfig(cacheNames = "task-cache")
 @Transactional(readOnly = true)
 public class TaskServiceImpl implements TaskService {
 
@@ -25,63 +31,54 @@ public class TaskServiceImpl implements TaskService {
     private final TaskCreateUpdateMapper taskCreateUpdateMapper;
     private final TaskRepository taskRepository;
 
-    @PostAuthorize("@taskPermissionHandler.isTaskUser(#id, principal.username)")
+    @Cacheable(key = "#id")
     @Override
-    public TaskReadDto getTaskById(Long id) {
+    public TaskReadDto findTaskById(Long id) {
         return taskRepository.findById(id)
-                .map(taskReadMapper::map)
+                .map(taskReadMapper::toDto)
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
-    @PreAuthorize("isAuthenticated()")
+    @Cacheable(key = "#username", condition = "#pageable.pageNumber == 0")
     @Override
-    public List<TaskReadDto> getAll() {
-        return taskRepository.findAll().stream()
-                .map(taskReadMapper::map)
-                .toList();
+    public Page<TaskReadDto> findAllByUsername(String username, Pageable pageable) {
+        return taskRepository.findAllByOwnerUsername(username, pageable)
+                .map(taskReadMapper::toDto);
     }
 
-    @PreAuthorize("isAuthenticated()")
-    @Override
-    public List<TaskReadDto> getAllByUsername(String username) {
-        return taskRepository.getAllByUsername(username).stream()
-                .map(taskReadMapper::map)
-                .toList();
-    }
-
-    @PreAuthorize("hasRole('USER')")
+    @CachePut(key = "#taskCreateUpdateDto.ownerUsername")
     @Transactional
     @Override
     public TaskReadDto create(TaskCreateUpdateDto taskCreateUpdateDto) {
         return Optional.of(taskCreateUpdateDto)
-                .map(taskCreateUpdateMapper::map)
+                .map(taskCreateUpdateMapper::toEntity)
                 .map(taskRepository::save)
-                .map(taskReadMapper::map)
+                .map(taskReadMapper::toDto)
                 .orElseThrow(() -> new RuntimeException("Task could not be created"));
     }
 
-    @PreAuthorize("@taskPermissionHandler.isTaskUser(#id, principal.username)")
+    @CachePut(key = "#taskCreateUpdateDto.ownerUsername")
     @Transactional
     @Override
     public TaskReadDto update(Long id, TaskCreateUpdateDto taskCreateUpdateDto) {
         return taskRepository.findById(id)
-                .map(task -> taskCreateUpdateMapper.map(taskCreateUpdateDto, task))
+                .map(task -> taskCreateUpdateMapper.toEntity(taskCreateUpdateDto, task))
                 .map(taskRepository::save)
-                .map(taskReadMapper::map)
+                .map(taskReadMapper::toDto)
                 .orElseThrow(() -> new TaskNotFoundException(id));
     }
 
-    @PreAuthorize("@taskPermissionHandler.isTaskOwner(#id, principal.username)")
+    @CacheEvict(key = "#id")
     @Transactional
     @Override
     public void delete(Long id) {
         taskRepository.deleteById(id);
     }
 
-    @PreAuthorize("#username == principal.username")
+    @CacheEvict(allEntries = true)
     @Transactional
     @Override
     public void deleteAllByUsername(String username) {
-        taskRepository.deleteAllByUsername(username);
+        taskRepository.deleteAllByOwnerUsername(username);
     }
 }

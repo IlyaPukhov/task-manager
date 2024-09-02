@@ -1,0 +1,48 @@
+server:
+  port: 8090
+spring:
+  mail:
+    host: ${SMTP_HOST}
+    port: 587
+    username: ${SMTP_USERNAME}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls.enable: true
+    sender:
+      email: no-reply@task-manager.com
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+logging:
+  level:
+    root: info
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 1
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_SERVER_HOST:localhost:8761}/eureka/
+    registryFetchIntervalSeconds: 1
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  zipkin:
+    tracing:
+      endpoint: http://${ZIPKIN_HOST:localhost:9411}/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true

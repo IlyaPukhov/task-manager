@@ -1,0 +1,41 @@
+[
+  {
+    "id": "e7a1ff78-d6f1-4f77-bd3b-4e8b0b85af0f",
+    "username": "norris",
+    "date": "2024-08-26",
+    "mood": 8,
+    "productivity_status": "GOOD",
+    "checklist": {
+      "EXERCISE": true,
+      "FAMILY_TIME": false,
+      "WORK": true
+    },
+    "notes": "Highly productive day, all activities were completed."
+  },
+  {
+    "id": "f5a3b6b1-65b6-4723-a8c4-2d85c96e6e1c",
+    "username": "brucelee",
+    "date": "2024-08-25",
+    "mood": 5,
+    "productivity_status": "EXCELLENT",
+    "checklist": {
+      "EXERCISE": false,
+      "FAMILY_TIME": true,
+      "WORK": false
+    },
+    "notes": "Great productivity today, completed exercise and work tasks."
+  },
+  {
+    "id": "a2b6f9e4-bc7d-42a4-9419-173b5f3f1f4f",
+    "username": "stallone",
+    "date": "2024-08-24",
+    "mood": 7,
+    "productivity_status": "FAIR",
+    "checklist": {
+      "EXERCISE": true,
+      "HOBBY": true,
+      "WORK": true
+    },
+    "notes": "Not a very productive day, only managed to read for a while."
+  }
+]

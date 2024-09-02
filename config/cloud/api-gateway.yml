@@ -1,0 +1,79 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+spring:
+  cors:
+    url:
+      configurations:
+        "[/**]":
+          allowed-origins:
+            - http://localhost:8081
+          allowed-methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+          allowed-headers:
+            - Authorization
+            - Content-Type
+          allow-credentials: true
+          exposed-headers:
+            - X-CUSTOM-HEADER
+          max-age: 10
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        - id: eureka-service-route
+          uri: http://${EUREKA_SERVER_HOST:localhost:8761}
+          predicates:
+            - Host=/eureka/web
+        - id: user-service-route
+          uri: lb://user-service
+          predicates:
+            - Host=/api/v1/users/**
+        - id: task-service-route
+          uri: lb://task-service
+          predicates:
+            - Host=/api/v1/tasks/**
+        - id: productivity-service-route
+          uri: lb://productivity-service
+          predicates:
+            - Host=/api/v1/productivity/**
+auth-service:
+  uri: http://${AUTH_SERVICE_HOST:localhost:8084}
+logging:
+  level:
+    root: info
+    org.springframework.cloud.gateway.route.RouteDefinitionRouteLocator: info
+    org.springframework.cloud.gateway: trace
+    org.springframework.security: debug
+eureka:
+  instance:
+    leaseRenewalIntervalInSeconds: 1
+    leaseExpirationDurationInSeconds: 1
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://${EUREKA_SERVER_HOST:localhost:8761}/eureka/
+    registryFetchIntervalSeconds: 1
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - prometheus
+  zipkin:
+    tracing:
+      endpoint: http://${ZIPKIN_HOST:localhost:9411}/api/v2/spans
+  tracing:
+    sampling:
+      probability: 1.0
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true

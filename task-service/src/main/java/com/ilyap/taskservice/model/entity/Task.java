@@ -6,22 +6,17 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.experimental.FieldNameConstants;
 import org.hibernate.proxy.HibernateProxy;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 import java.util.Objects;
 
-@FieldNameConstants
 @Getter
 @Setter
 @ToString
@@ -29,7 +24,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Entity
 @Table(name = "task")
-public class Task extends AuditingEntity {
+public class Task extends AuditingEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,12 +40,7 @@ public class Task extends AuditingEntity {
     @Enumerated(EnumType.STRING)
     private Priority priority;
 
-    @ManyToOne
-    private TaskManagerUser owner;
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "task")
-    private List<UserTask> userTasks = new ArrayList<>();
+    private String ownerUsername;
 
     @Override
     public final boolean equals(Object o) {
