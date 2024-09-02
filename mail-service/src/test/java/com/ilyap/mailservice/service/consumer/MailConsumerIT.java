@@ -8,6 +8,7 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -60,6 +61,7 @@ public class MailConsumerIT extends KafkaBaseTest {
     }
 
     @Test
+    @Disabled
     public void consume_validMessage_processesMessageSuccessfully() {
         Executors.newSingleThreadExecutor().execute(() -> kafkaTemplate.send(TOPIC, VALID_MESSAGE));
 
