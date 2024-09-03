@@ -4,6 +4,7 @@ on:
   push:
     branches: [ 'master' ]
     paths: [ 'logging-starter/**' ]
+  workflow_dispatch:
 env:
   STARTER: logging-starter
 jobs:

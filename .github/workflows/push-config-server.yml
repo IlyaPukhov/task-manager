@@ -4,6 +4,7 @@ on:
   push:
     branches: [ 'master' ]
     paths: [ 'config-server/**' ]
+  workflow_dispatch:
 env:
   SERVICE: config-server
 jobs:

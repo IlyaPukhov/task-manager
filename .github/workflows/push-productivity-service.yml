@@ -4,6 +4,7 @@ on:
   push:
     branches: [ 'master' ]
     paths: [ 'productivity-service/**' ]
+  workflow_dispatch:
 env:
   SERVICE: productivity-service
 jobs:

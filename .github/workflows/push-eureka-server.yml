@@ -4,6 +4,7 @@ on:
   push:
     branches: [ 'master' ]
     paths: [ 'eureka-server/**' ]
+  workflow_dispatch:
 env:
   SERVICE: eureka-server
 jobs:

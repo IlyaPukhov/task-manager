@@ -4,6 +4,7 @@ on:
   push:
     branches: [ 'master' ]
     paths: [ 'task-service/**' ]
+  workflow_dispatch:
 env:
   SERVICE: task-service
 jobs:

@@ -4,6 +4,7 @@ on:
   push:
     branches: [ 'master' ]
     paths: [ 'mail-service/**' ]
+  workflow_dispatch:
 env:
   SERVICE: mail-service
 jobs:

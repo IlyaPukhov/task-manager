@@ -4,6 +4,7 @@ on:
   push:
     branches: [ 'master' ]
     paths: [ 'validation-starter/**' ]
+  workflow_dispatch:
 env:
   STARTER: validation-starter
 jobs:

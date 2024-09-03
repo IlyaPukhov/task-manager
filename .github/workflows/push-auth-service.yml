@@ -4,6 +4,7 @@ on:
   push:
     branches: [ 'master' ]
     paths: [ 'auth-service/**' ]
+  workflow_dispatch:
 env:
   SERVICE: auth-service
 jobs:

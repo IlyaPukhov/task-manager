@@ -4,6 +4,7 @@ on:
   push:
     branches: [ 'master' ]
     paths: [ 'api-gateway/**' ]
+  workflow_dispatch:
 env:
   SERVICE: api-gateway
 jobs:
