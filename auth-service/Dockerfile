@@ -1,4 +1,4 @@
-FROM maven:3.9.6-alpine AS builder
+FROM maven:3.9-eclipse-temurin-21-alpine AS builder
 WORKDIR /application
 COPY . .
 RUN --mount=type=cache,target=/root/.m2  mvn clean install -Dmaven.test.skip
