@@ -10,13 +10,6 @@
         <relativePath />
     </parent>
 
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/IlyaPukhov/task-manager</url>
-        </repository>
-    </distributionManagement>
-
     <modules>
         <module>logging-starter</module>
         <module>validation-starter</module>
