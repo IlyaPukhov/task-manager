@@ -1,4 +1,4 @@
-name: 'Productivity Service CI'
+name: Productivity Service CI
 
 on:
   push:

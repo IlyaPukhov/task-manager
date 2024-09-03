@@ -1,4 +1,4 @@
-name: 'Publish Logging Starter'
+name: Publish Logging Starter
 
 on:
   push:

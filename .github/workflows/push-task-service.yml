@@ -1,4 +1,4 @@
-name: 'Task Service CI'
+name: Task Service CI
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: 'Mail Service CI'
+name: Mail Service CI
 
 on:
   push:

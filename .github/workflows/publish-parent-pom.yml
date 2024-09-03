@@ -1,12 +1,11 @@
-name: Publish Validation Starter
+name: Publish Parent POM
 
 on:
   push:
     branches: [ 'master' ]
-    paths: [ 'validation-starter/**' ]
+    paths: [ 'pom.xml' ]
   workflow_dispatch:
 env:
-  STARTER: validation-starter
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   publish:
@@ -21,8 +20,8 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Build starter
-        run: mvn clean install -f ${{ env.STARTER }}
+      - name: Set up Maven settings
+        run: cp .github/maven-settings.xml $HOME/.m2/settings.xml
 
-      - name: Publish starter to GitHub Packages
-        run: mvn deploy -f ${{ env.STARTER }}/pom.xml --settings .github/maven-settings.xml
+      - name: Publish POM
+        run: mvn deploy -f pom.xml --settings .github/maven-settings.xml
