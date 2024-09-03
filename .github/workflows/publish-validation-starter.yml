@@ -1,0 +1,28 @@
+name: 'Publish Validation Starter'
+
+on:
+  push:
+    branches: [ 'master' ]
+    paths: [ 'validation-starter/**' ]
+env:
+  STARTER: validation-starter
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'adopt'
+
+      - name: Build starter
+        run: mvn clean install -f ${{ env.STARTER }}
+
+      - name: Publish starter to GitHub Packages
+        run: mvn deploy -f ${{ env.STARTER }} --settings .github/maven-settings.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
