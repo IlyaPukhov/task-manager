@@ -24,6 +24,6 @@ jobs:
         run: mvn clean install -f ${{ env.STARTER }}
 
       - name: Publish starter to GitHub Packages
-        run: mvn deploy -f ${{ env.STARTER }} --settings .github/maven-settings.xml
+        run: mvn deploy -f ${{ env.STARTER }}/pom.xml --settings .github/maven-settings.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
