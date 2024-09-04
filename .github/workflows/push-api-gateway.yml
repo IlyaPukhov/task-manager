@@ -42,5 +42,5 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE }}:latest
           secret-envs: |
-            GITHUB_ACTOR=${{ github.actor }}
-            GITHUB_TOKEN=${{ env.GITHUB_TOKEN }}
+            env.GITHUB_ACTOR=${{ env.GITHUB_ACTOR }}
+            env.GITHUB_TOKEN=${{ env.GITHUB_TOKEN }}
