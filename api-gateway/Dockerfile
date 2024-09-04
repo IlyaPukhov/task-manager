@@ -1,4 +1,10 @@
 FROM maven:3.9-eclipse-temurin-21-alpine AS builder
+
+ARG GITHUB_ACTOR
+ARG GITHUB_TOKEN
+ENV env.GITHUB_ACTOR=$GITHUB_ACTOR
+ENV env.GITHUB_TOKEN=$GITHUB_TOKEN
+
 WORKDIR /application
 COPY . .
 RUN --mount=type=cache,target=/root/.m2  mvn clean install -Dmaven.test.skip -s /application/settings.xml
