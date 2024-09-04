@@ -24,9 +24,4 @@ jobs:
         run: cp .github/maven-settings.xml $HOME/.m2/settings.xml
 
       - name: Publish POM
-        run: mvn deploy:deploy-file \
-          --settings $HOME/.m2/settings.xml \
-          -Dfile=pom.xml \
-          -DpomFile=pom.xml \
-          -Durl=https://maven.pkg.github.com/IlyaPukhov/task-manager \
-          -DrepositoryId=github
+        run: mvn deploy:deploy-file --settings $HOME/.m2/settings.xml -Dfile=pom.xml -DpomFile=pom.xml -Durl=https://maven.pkg.github.com/IlyaPukhov/task-manager -DrepositoryId=github
