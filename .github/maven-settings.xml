@@ -17,6 +17,12 @@
                     </snapshots>
                 </repository>
             </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/IlyaPukhov/task-manager</url>
+                </pluginRepository>
+            </pluginRepositories>
         </profile>
     </profiles>
     <servers>
