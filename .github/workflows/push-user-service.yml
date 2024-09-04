@@ -22,7 +22,9 @@ jobs:
           distribution: 'temurin'
 
       - name: Set up Maven settings
-        run: cp .github/maven-settings.xml $HOME/.m2/settings.xml
+        run: |
+          cp .github/maven-settings.xml $HOME/.m2/settings.xml
+          cp .github/maven-settings.xml ${{ env.SERVICE }}/
 
       - name: Run tests
         run: mvn -B verify -f ${{ env.SERVICE }}/pom.xml
