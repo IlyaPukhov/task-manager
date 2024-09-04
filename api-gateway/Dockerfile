@@ -1,8 +1,7 @@
 FROM maven:3.9-eclipse-temurin-21-alpine AS builder
 WORKDIR /application
 COPY . .
-COPY maven-settings.xml /root/.m2/settings.xml
-RUN --mount=type=cache,target=/root/.m2  mvn clean install -Dmaven.test.skip
+RUN --mount=type=cache,target=/root/.m2  mvn clean install -Dmaven.test.skip -s /application/maven-settings.xml
 
 FROM bellsoft/liberica-openjre-alpine:21 AS layers
 WORKDIR /application
