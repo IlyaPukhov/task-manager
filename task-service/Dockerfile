@@ -1,8 +1,13 @@
 FROM maven:3.9-eclipse-temurin-21-alpine AS builder
+
+ARG GITHUB_ACTOR
+ARG GITHUB_TOKEN
+ENV env.GITHUB_ACTOR=$GITHUB_ACTOR
+ENV env.GITHUB_TOKEN=$GITHUB_TOKEN
+
 WORKDIR /application
 COPY . .
-COPY maven-settings.xml /root/.m2/settings.xml
-RUN --mount=type=cache,target=/root/.m2  mvn clean install -Dmaven.test.skip
+RUN --mount=type=cache,target=/root/.m2  mvn clean install -Dmaven.test.skip -s /application/settings.xml
 
 FROM bellsoft/liberica-openjre-alpine:21 AS layers
 WORKDIR /application

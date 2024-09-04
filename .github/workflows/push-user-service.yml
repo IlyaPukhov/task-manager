@@ -41,6 +41,6 @@ jobs:
           context: ./${{ env.SERVICE }}
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/${{ env.SERVICE }}:latest
-          secret-envs: |
+          build-args: |
             GITHUB_ACTOR=${{ github.actor }}
             GITHUB_TOKEN=${{ env.GITHUB_TOKEN }}

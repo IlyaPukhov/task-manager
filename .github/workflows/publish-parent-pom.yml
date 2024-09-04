@@ -1,0 +1,27 @@
+name: Publish Parent POM
+
+on:
+  push:
+    branches: [ 'master' ]
+    paths: [ 'pom.xml' ]
+  workflow_dispatch:
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4.1.7
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4.2.2
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Set up Maven settings
+        run: cp .github/maven-settings.xml $HOME/.m2/settings.xml
+
+      - name: Publish POM
+        run: mvn deploy:deploy-file -Dfile=pom.xml -DpomFile=pom.xml -DgeneratePom=false -Durl=https://maven.pkg.github.com/IlyaPukhov/task-manager -DrepositoryId=github
